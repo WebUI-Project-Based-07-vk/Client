@@ -22,6 +22,7 @@ interface ModalProvideContext {
   ) => void
   closeModal: () => void
   closeModalAction: () => void
+  setCloseCallback: (callback: () => void) => void
 }
 
 interface ModalProviderProps {
@@ -73,8 +74,8 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   )
 
   const contextValue = useMemo(
-    () => ({ openModal, closeModal, closeModalAction }),
-    [closeModal, openModal, closeModalAction]
+    () => ({ openModal, closeModal, closeModalAction, setCloseCallback }),
+    [closeModal, openModal, closeModalAction, setCloseCallback]
   )
 
   return (
