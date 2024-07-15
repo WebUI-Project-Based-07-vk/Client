@@ -137,12 +137,15 @@ const StudentRegistrationForm: FC<StudentRegistrationFormProps> = ({
       </Typography>
 
       <AppButton
-        disabled={!Object.values(errors).every((value) => !value)}
+        disabled={
+          !Object.values(data).every((value) => value) ||
+          !Object.values(errors).every((value) => !value)
+        }
         loading={authLoading}
         sx={styles.loginButton}
         type='submit'
       >
-        {t('common.labels.login')}
+        {t('common.labels.signup')}
       </AppButton>
     </Box>
   )
