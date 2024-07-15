@@ -12,14 +12,11 @@ import { PaperProps } from '@mui/material/Paper'
 interface Component {
   component: React.ReactElement
   paperProps?: PaperProps
+  closeCallbackProp?: () => void
 }
 
 interface ModalProvideContext {
-  openModal: (
-    component: Component,
-    delayToClose?: number,
-    closeCallbackProp?: () => void
-  ) => void
+  openModal: (component: Component, delayToClose?: number) => void
   closeModal: () => void
   closeModalAction: () => void
   setCloseCallback: (callback: () => void) => void
@@ -60,9 +57,8 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
 
   const openModal = useCallback(
     (
-      { component, paperProps }: Component,
-      delayToClose?: number,
-      closeCallbackProp?: () => void
+      { component, paperProps, closeCallbackProp }: Component,
+      delayToClose?: number
     ) => {
       setModal(component)
 

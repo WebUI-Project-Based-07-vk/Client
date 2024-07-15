@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useTranslation } from 'react-i18next'
-import { useSignUpMutation } from '~/services/auth-service'
 import GoogleLogin from '~/containers/guest-home-page/google-login/GoogleLogin'
 import StudentRegistrationForm from '../student-registration-form/StudentRegistrationForm'
 import useForm from '~/hooks/use-form'
@@ -19,7 +18,6 @@ import { signup, snackbarVariants } from '~/constants'
 import styles from '~/containers/guest-home-page/student-registration-dialog/studentRegistrationDialog.styles'
 import { useCallback, useEffect, useState } from 'react'
 import ConfirmDialog from '~/components/confirm-dialog/ConfirmDialog'
-import { UserRoleEnum } from '~/types'
 
 export interface formData {
   firstName: string
@@ -34,16 +32,11 @@ const StudentRegistrationDialog = () => {
   const { closeModal, setCloseCallback } = useModalContext()
   const { setAlert } = useSnackBarContext()
   const [showConfirm, setShowConfirm] = useState(false)
-  const [signUp, signUpStatus] = useSignUpMutation()
-  console.log(signUpStatus)
   const { handleSubmit, handleInputChange, handleBlur, data, errors } = useForm(
     {
       onSubmit: async () => {
         try {
-          await signUp({
-            ...data,
-            role: UserRoleEnum.Student
-          }).unwrap()
+          await Promise.resolve() //TODO Change for signup handle
           closeModal()
         } catch (e) {
           setAlert({
