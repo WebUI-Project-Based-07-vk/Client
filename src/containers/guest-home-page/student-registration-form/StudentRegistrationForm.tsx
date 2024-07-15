@@ -75,7 +75,6 @@ const StudentRegistrationForm: FC<StudentRegistrationFormProps> = ({
           value={data.firstName}
         />
         <AppTextField
-          autoFocus
           data-testid={'lastName'}
           errorMsg={t(errors.lastName)}
           fullWidth
@@ -91,7 +90,6 @@ const StudentRegistrationForm: FC<StudentRegistrationFormProps> = ({
       </Box>
 
       <AppTextField
-        autoFocus
         data-testid={'email'}
         errorMsg={t(errors.email)}
         fullWidth
