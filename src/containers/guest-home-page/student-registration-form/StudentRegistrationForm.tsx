@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import useInputVisibility from '~/hooks/use-input-visibility'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '~/hooks/use-redux'
 import { FC } from 'react'
 import Box from '@mui/material/Box'
 import ButtonBase from '@mui/material/ButtonBase'
@@ -47,7 +47,7 @@ const StudentRegistrationForm: FC<StudentRegistrationFormProps> = ({
     showInputText: showConfirmPassword
   } = useInputVisibility(errors.confirmPassword)
 
-  const { authLoading } = useSelector((state: RootState) => state.appMain)
+  const { authLoading } = useAppSelector((state: RootState) => state.appMain)
 
   const { openModal } = useModalContext()
 

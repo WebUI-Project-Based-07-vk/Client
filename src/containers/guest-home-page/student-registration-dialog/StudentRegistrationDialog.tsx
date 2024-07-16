@@ -62,7 +62,10 @@ const StudentRegistrationDialog = () => {
       : closeModal()
   }, [data, closeModal])
 
-  useEffect(() => setCloseCallback(() => onCloseAction), [onCloseAction])
+  useEffect(
+    () => setCloseCallback(() => onCloseAction),
+    [setCloseCallback, onCloseAction]
+  )
 
   return (
     <>
