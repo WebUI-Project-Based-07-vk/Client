@@ -12,11 +12,14 @@ import { PaperProps } from '@mui/material/Paper'
 interface Component {
   component: React.ReactElement
   paperProps?: PaperProps
+  closeCallbackProp?: () => void
 }
 
 interface ModalProvideContext {
   openModal: (component: Component, delayToClose?: number) => void
   closeModal: () => void
+  closeModalAction: () => void
+  setCloseCallback: (callback: () => void) => void
 }
 
 interface ModalProviderProps {
@@ -31,12 +34,18 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   const [modal, setModal] = useState<React.ReactElement | null>(null)
   const [paperProps, setPaperProps] = useState<PaperProps>({})
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
+  const [closeCallback, setCloseCallback] = useState<(() => void) | null>(null)
 
   const closeModal = useCallback(() => {
     setModal(null)
     setPaperProps({})
     setTimer(null)
+    setCloseCallback(null)
   }, [setModal, setPaperProps, setTimer])
+
+  const closeModalAction = useCallback(() => {
+    closeCallback ? closeCallback() : closeModal()
+  }, [closeCallback, closeModal])
 
   const closeModalAfterDelay = useCallback(
     (delay?: number) => {
@@ -47,18 +56,22 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   )
 
   const openModal = useCallback(
-    ({ component, paperProps }: Component, delayToClose?: number) => {
+    (
+      { component, paperProps, closeCallbackProp }: Component,
+      delayToClose?: number
+    ) => {
       setModal(component)
 
       paperProps && setPaperProps(paperProps)
       delayToClose && closeModalAfterDelay(delayToClose)
+      closeCallbackProp && setCloseCallback(closeCallbackProp)
     },
-    [setModal, setPaperProps, closeModalAfterDelay]
+    [setModal, setPaperProps, closeModalAfterDelay, setCloseCallback]
   )
 
   const contextValue = useMemo(
-    () => ({ openModal, closeModal }),
-    [closeModal, openModal]
+    () => ({ openModal, closeModal, closeModalAction, setCloseCallback }),
+    [closeModal, openModal, closeModalAction, setCloseCallback]
   )
 
   return (
