@@ -9,10 +9,9 @@ import { useModalContext } from '~/context/modal-context'
 import ForgotPassword from '~/containers/guest-home-page/forgot-password/ForgotPassword'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
-
-import { styles } from '~/containers/guest-home-page/student-registration-form/StudentRegistrationForm.styles'
+import { styles } from '~/containers/guest-home-page/registration-form/RegistrationForm.styles'
 import { RootState } from '~/redux/store'
-import { formData } from '../student-registration-dialog/StudentRegistrationDialog'
+import { formData } from '../registration-dialog/RegistrationDialog'
 
 declare module '@mui/material/TextField' {
   interface TextFieldPropsSizeOverrides {
@@ -20,7 +19,7 @@ declare module '@mui/material/TextField' {
   }
 }
 
-interface StudentRegistrationFormProps {
+interface RegistrationFormProps {
   handleSubmit: (event: React.FormEvent<HTMLDivElement>) => void
   handleChange: (
     key: 'firstName' | 'lastName' | 'email' | 'password' | 'confirmPassword'
@@ -32,7 +31,7 @@ interface StudentRegistrationFormProps {
   errors: formData
 }
 
-const StudentRegistrationForm: FC<StudentRegistrationFormProps> = ({
+const RegistrationForm: FC<RegistrationFormProps> = ({
   handleSubmit,
   handleChange,
   handleBlur,
@@ -151,4 +150,4 @@ const StudentRegistrationForm: FC<StudentRegistrationFormProps> = ({
   )
 }
 
-export default StudentRegistrationForm
+export default RegistrationForm
