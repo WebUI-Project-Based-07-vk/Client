@@ -11,7 +11,7 @@ import teachImg from '~/assets/img/guest-home-page/teachImg.png'
 import { UserRoleEnum } from '~/types'
 import { styles } from '~/containers/guest-home-page/styles/WhatCanYouDo.styles'
 import { useModalContext } from '~/context/modal-context'
-import StudentRegistrationDialog from './student-registration-dialog/StudentRegistrationDialog'
+import RegistrationDialog from './registration-dialog/RegistrationDialog'
 
 const cardData = [
   {
@@ -36,15 +36,11 @@ const WhatCanYouDo = () => {
 
   const cards = cardData.map((item) => (
     <InfoCard
-      action={
-        item.actionType === UserRoleEnum.Student
-          ? () => {
-              openModal({
-                component: <StudentRegistrationDialog />
-              })
-            }
-          : () => {}
-      }
+      action={() => {
+        openModal({
+          component: <RegistrationDialog role={item.actionType} />
+        })
+      }}
       actionLabel={t(item.actionLabel)}
       cardWidth={460}
       description={t(item.description)}
