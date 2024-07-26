@@ -70,7 +70,16 @@ const LoginForm = ({
         {t('login.forgotPassword')}
       </Typography>
 
-      <AppButton loading={authLoading} sx={styles.loginButton} type='submit'>
+      <AppButton
+        disabled={
+          !Object.values(data).every((value) => value) ||
+          !(data.password.length >= 8 && data.password.length <= 25) ||
+          !Object.values(errors).every((value) => !value)
+        }
+        loading={authLoading}
+        sx={styles.loginButton}
+        type='submit'
+      >
         {t('common.labels.login')}
       </AppButton>
     </Box>
