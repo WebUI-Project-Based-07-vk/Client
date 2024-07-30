@@ -77,6 +77,14 @@ export interface RouteItem {
   path: string
 }
 
+export type Emitter = ({
+  files,
+  error
+}: {
+  files: File[]
+  error: string
+}) => void
+
 export interface AddDocuments {
   maxFileSize: number
   maxAllFilesSize: number

@@ -24,9 +24,9 @@ import {
 
 interface FileUploaderProps {
   buttonText: string
-  emitter: ({ files, error }: Emitter) => void
-  initialState: File[]
-  initialError: string
+  emitter: Emitter
+  initialState?: File[]
+  initialError?: string
   validationData: AddDocuments
   isImages?: boolean
   sx?: {
