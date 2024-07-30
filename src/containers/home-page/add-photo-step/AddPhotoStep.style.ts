@@ -13,7 +13,6 @@ export const style = {
     width: '100%',
     height: '100%',
     borderRadius: '20px',
-    border: '1px dashed black',
     mt: { xs: '20px', md: '0px' }
   },
   imgContainer: {
@@ -22,8 +21,7 @@ export const style = {
     maxWidth: '440px',
     width: '100%',
     flex: 1,
-    pb: { xs: '16px', sm: '26px', md: '52px' },
-    justifyContent: 'center'
+    pb: { xs: '16px', sm: '26px', md: '52px' }
   },
   uploadBox: {
     display: 'flex',
@@ -38,7 +36,7 @@ export const style = {
     mt: { xs: '20px', md: '0px' }
   },
   activeDrag: {
-    border: '2px primary',
+    border: '2px solid',
     borderColor: 'primary.900'
   },
   rightBox: {
