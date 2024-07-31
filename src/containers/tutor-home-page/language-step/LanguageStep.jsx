@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import TextField from '@mui/material/TextField'
-import { Container } from '~/sharing/Container'
-import { ImgContainer } from '~/sharing/ImgContainer'
-import { Img } from '~/sharing/Img'
-import { RightBox } from '~/sharing/RightBox'
-import { Title } from '~/sharing/Title'
-import { AutocompleteStyled } from '~/sharing/AutocompleteStyled'
-import { MobileImgContainer } from '~/sharing/MobileImgContainer'
+import {
+  Container,
+  ImgContainer,
+  Img,
+  RightBox,
+  Title,
+  AutocompleteStyled,
+  MobileImgContainer
+} from '~/components/shared'
 import img from '~/assets/img/tutor-home-page/become-tutor/languages.svg'
 import { styles } from '~/containers/tutor-home-page/language-step/LanguageStep.styles'
 import { useTranslation } from 'react-i18next'
