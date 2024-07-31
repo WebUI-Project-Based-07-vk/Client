@@ -11,6 +11,7 @@ export const style = {
   },
   img: {
     width: '100%',
+    height: '100%',
     borderRadius: '20px',
     mt: { xs: '20px', md: '0px' }
   },
@@ -35,14 +36,15 @@ export const style = {
     mt: { xs: '20px', md: '0px' }
   },
   activeDrag: {
-    border: '2px primary',
+    border: '2px solid',
     borderColor: 'primary.900'
   },
-  rigthBox: {
+  rightBox: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     maxWidth: '432px',
+    width: '100%',
     m: { md: 0, xs: '0 auto' },
     pt: 0,
     pb: { xs: '30px', sm: '0' }
