@@ -42,7 +42,7 @@ const UserStepsWrapper: FC<UserStepsWrapperProps> = ({ userRole }) => {
   const stepLabels = userRole === student ? '' : tutorStepLabels
 
   return (
-    <StepProvider initialValues={initialValues} stepLabels={stepLabels}>
+    <StepProvider initialValues={initialValues}>
       <StepWrapper steps={stepLabels}>{childrenArr}</StepWrapper>
     </StepProvider>
   )
