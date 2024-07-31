@@ -1,10 +1,10 @@
-import { Container } from '~/shared/Container'
-import { ImgContainer } from '~/shared/ImgContainer'
-import { Img } from '~/shared/Img'
-import { RightBox } from '~/shared/RightBox'
-import { Title } from '~/shared/Title'
-import { AutocompleteStyled } from '~/shared/AutocompleteStyled'
-import { MobileImgContainer } from '~/shared/MobileImgContainer'
+import { Container } from './Container/Container'
+import { ImgContainer } from './ImgContainer/ImgContainer'
+import { Img } from './Img/Img'
+import { RightBox } from './RightBox/RightBox'
+import { Title } from './Title/Title'
+import { AutocompleteStyled } from './AutocompleteStyled/AutocompleteStyled'
+import { MobileImgContainer } from './MobileImgContainer/MobileImgContainer'
 
 export {
   Container,
