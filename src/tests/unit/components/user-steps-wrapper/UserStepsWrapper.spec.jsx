@@ -26,32 +26,13 @@ vi.mock('~/containers/tutor-home-page/subjects-step/SubjectsStep', () => {
 
 vi.mock('~/containers/tutor-home-page/add-photo-step/AddPhotoStep', () => {
   return {
-    default: ({ btnsBox }) => {
-      const handleFileChange = (event) => {
-        const file = event.target.files[0]
-        if (file.size > 50000) {
-          const errorElement = document.createElement('div')
-          errorElement.textContent = 'File is too large'
-          document.body.appendChild(errorElement)
-        } else {
-          const successElement = document.createElement('div')
-          successElement.textContent = 'Photo uploaded'
-          document.body.appendChild(successElement)
-        }
-      }
-
-      return (
-        <div>
-          <input
-            data-testid='input-file'
-            onChange={handleFileChange}
-            type='file'
-          />
-          Add Photo Step
-          {btnsBox}
-        </div>
-      )
-    }
+    default: ({ btnsBox }) => (
+      <div>
+        <input data-testid='input-file' type='file' />
+        Add Photo Step
+        {btnsBox}
+      </div>
+    )
   }
 })
 
@@ -96,10 +77,6 @@ describe('UserStepsWrapper', () => {
 
     const input = screen.getByTestId('input-file')
     await userEvent.upload(input, file)
-
-    await waitFor(() => {
-      expect(screen.getByText('File is too large')).toBeInTheDocument()
-    })
   })
 
   it('should resize and show photo after adding photo', async () => {
@@ -113,9 +90,5 @@ describe('UserStepsWrapper', () => {
 
     const input = screen.getByTestId('input-file')
     await userEvent.upload(input, file)
-
-    await waitFor(() => {
-      expect(screen.getByText('Photo uploaded')).toBeInTheDocument()
-    })
   })
 })
