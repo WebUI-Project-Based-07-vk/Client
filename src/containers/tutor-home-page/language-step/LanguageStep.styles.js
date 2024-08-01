@@ -1,6 +1,6 @@
 import { fadeAnimation } from '~/styles/app-theme/custom-animations'
 
-export const styles = {
+export const styles = (theme) => ({
   container: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -26,5 +26,22 @@ export const styles = {
     justifyContent: 'space-between',
     m: { md: 0, xs: '0 auto' },
     pt: 0
+  },
+  title: {
+    marginBottom: '16px',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '8px'
+    }
+  },
+  autocomplete: {
+    width: '100%',
+    marginBottom: '16px'
+  },
+  mobileImgContainer: {
+    display: 'none',
+    [theme.breakpoints.down('sm')]: {
+      display: 'block',
+      textAlign: 'center'
+    }
   }
-}
+})
