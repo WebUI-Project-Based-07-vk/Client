@@ -1,5 +1,6 @@
-import { emptyField, nameField, textField } from '~/utils/validations/common'
+import { emptyField, textField } from '~/utils/validations/common'
 import { GeneralInfoForm } from '~/types'
+import { firstName, lastName } from '~/utils/validations/login'
 
 export const initialValues: GeneralInfoForm = {
   firstName: '',
@@ -12,12 +13,12 @@ export const initialValues: GeneralInfoForm = {
 export const textAreaMaxLength = 200
 
 export const validations = {
-  firstName: (value: GeneralInfoForm['firstName']) => nameField(value),
-  lastName: (value: GeneralInfoForm['lastName']) => nameField(value),
-  country: (value: GeneralInfoForm['country']) =>
-    emptyField<GeneralInfoForm['country']>(value),
-  city: (value: GeneralInfoForm['city']) =>
-    emptyField<GeneralInfoForm['city']>(value),
+  firstName: (value: GeneralInfoForm['firstName']) => firstName(value),
+  lastName: (value: GeneralInfoForm['lastName']) => lastName(value),
+  country: (value: GeneralInfoForm['country'] | string) =>
+    emptyField<GeneralInfoForm['country']>(value as GeneralInfoForm['country']),
+  city: (value: GeneralInfoForm['city'] | string) =>
+    emptyField<GeneralInfoForm['city']>(value as GeneralInfoForm['city']),
   professionalSummary: (value: GeneralInfoForm['professionalSummary']) =>
     textField(0, textAreaMaxLength)(value)
 }

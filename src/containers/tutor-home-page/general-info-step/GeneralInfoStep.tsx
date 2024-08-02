@@ -18,7 +18,7 @@ import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralIn
 import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
 import { useTranslation } from 'react-i18next'
 import {
-  // validations,
+  validations,
   countriesMock,
   initialValues,
   textAreaMaxLength
@@ -43,16 +43,16 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
 
   const {
     data,
-    // errors,
+    errors,
     handleInputChange,
-    // handleBlur,
+    handleBlur,
     handleNonInputValueChange,
     // handleSubmit,
     resetData
   } = useForm<GeneralInfoForm>({
-    initialValues
-    // onSubmit:
-    // validations // - error
+    initialValues,
+    onSubmit: () => new Promise(() => {}),
+    validations
   })
 
   const handleCountryChange = (
@@ -76,24 +76,31 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
         <Img src={img} />
       </ImgContainer>
       <RightBox>
-        <Box>
+        <Box component='form'>
           <Title>{t('becomeTutor.generalInfo.title')}</Title>
           <MobileImgContainer>
             <Img src={img} />
           </MobileImgContainer>
           <Box sx={styles.inputsWrapper}>
             <AppTextField
+              autoFocus
+              errorMsg={t(errors.firstName)}
+              label={t('common.labels.firstName')}
+              onBlur={handleBlur('firstName')}
               onChange={handleInputChange('firstName')}
-              placeholder={t('becomeTutor.generalInfo.firstNameTextField')}
               required
               sx={styles.input as SxProps<Theme>}
+              type='text'
               value={data.firstName}
             />
             <AppTextField
+              errorMsg={t(errors.lastName)}
+              label={t('common.labels.lastName')}
+              onBlur={handleBlur('lastName')}
               onChange={handleInputChange('lastName')}
-              placeholder={t('becomeTutor.generalInfo.lastNameTextField')}
               required
               sx={styles.input as SxProps<Theme>}
+              type='text'
               value={data.lastName}
             />
           </Box>
@@ -104,22 +111,20 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label={t('becomeTutor.generalInfo.countryLabel')}
-                  required
+                  placeholder={t('becomeTutor.generalInfo.countryLabel')}
                 />
               )}
               value={data.country}
             />
             <AutocompleteStyledTyped<CityType>
-              onChange={(e, newVal) => {
+              onChange={(_e, newVal) => {
                 handleNonInputValueChange('city', newVal)
               }}
               options={cities}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label={t('becomeTutor.generalInfo.cityLabel')}
-                  required
+                  placeholder={t('becomeTutor.generalInfo.cityLabel')}
                 />
               )}
               value={data.city}
@@ -131,6 +136,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
             onChange={handleInputChange('professionalSummary')}
             placeholder={t('becomeTutor.generalInfo.textFieldLabel')}
             textFieldStyles={{ style: styles.textArea }}
+            type='text'
             value={data.professionalSummary}
           />
           <Typography sx={styles.helperText}>

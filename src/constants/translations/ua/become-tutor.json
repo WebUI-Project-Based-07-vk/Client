@@ -6,11 +6,9 @@
     "photo": "Фото"
   },
   "generalInfo": {
-    "title": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+    "title": "Будь ласка, заповніть реєстраційну форму, щоб отримати найкращий досвід.",
     "textFieldLabel": "Коротко опишіть свій професійний статус",
     "helperText": "Поля зі знаком * є обов'язковими",
-    "firstNameTextField": "Ім'я",
-    "lastNameTextField": "Прізвище",
     "countryLabel": "Країна",
     "cityLabel": "Місто"
   },
@@ -38,14 +36,5 @@
 	"typeError": "Неправильний тип файлу. Дозволяються лише файли .png/.jpg/.jpeg.",
 	"fileSizeError": "Розмір одного файлу не може перевищувати 10 Мб."
   },
-  "successMessage": "Успішно! Ваші дані додано.",
-  "errorMessages": {
-    "generalInfo": {
-      "firstName": "",
-      "lastName": "",
-      "country": "",
-      "city": "",
-      "professionalSummary": ""
-    }
-  }
+  "successMessage": "Успішно! Ваші дані додано."
 }

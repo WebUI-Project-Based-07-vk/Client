@@ -13,7 +13,7 @@ export const styles = {
     gap: '16px'
   },
   input: {
-    width: { xs: '100%', sm: 'auto' }
+    width: { xs: '100%', sm: '50%' }
   },
   textArea: {
     width: '100%',

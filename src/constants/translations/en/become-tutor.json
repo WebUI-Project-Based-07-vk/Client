@@ -1,10 +1,8 @@
 {
   "generalInfo": {
-    "title": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+    "title": "Please complete the registration form for the best possible experience.",
     "textFieldLabel": "Describe in short your professional status",
     "helperText": "Inputs with the * sign are required",
-    "firstNameTextField": "First Name",
-    "lastNameTextField": "Last Name",
     "countryLabel": "Country",
     "cityLabel": "City"
   },
@@ -32,14 +30,5 @@
     "typeError": "Wrong file type. Only .png/.jpg/.jpeg files are allowed.",
     "fileSizeError": "Size for one file cannot be more than 10MB."
   },
-  "successMessage": "Success! Your data were added.",
-  "errorMessages": {
-    "generalInfo": {
-      "firstName": "",
-      "lastName": "",
-      "country": "",
-      "city": "",
-      "professionalSummary": ""
-    }
-  }
+  "successMessage": "Success! Your data were added."
 }
