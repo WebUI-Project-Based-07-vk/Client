@@ -1,13 +1,5 @@
 import { nameField, textField } from '~/utils/validations/common'
 
-export const initialValues = {
-  firstName: '',
-  lastName: '',
-  country: null,
-  city: null,
-  professionalSummary: ''
-}
-
 export const validations = {
   firstName: nameField,
   lastName: nameField,
