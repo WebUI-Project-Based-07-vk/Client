@@ -1,5 +1,5 @@
 import { emptyField, textField } from '~/utils/validations/common'
-import { GeneralInfoForm } from '~/types'
+import { GeneralInfoFinal, GeneralInfoForm } from '~/types'
 import { firstName, lastName } from '~/utils/validations/login'
 
 export const initialValues: GeneralInfoForm = {
@@ -22,6 +22,19 @@ export const validations = {
   professionalSummary: (value: GeneralInfoForm['professionalSummary']) =>
     textField(0, textAreaMaxLength)(value)
 }
+
+// ! should be used when sending data to backend
+export const GeneralInfoFormDataTransfer = (
+  data: GeneralInfoForm
+): GeneralInfoFinal => ({
+  ...data,
+  country: data.country?.label || null,
+  city: data.city?.label || null,
+  professionalSummary:
+    data.professionalSummary.trim().length === 0
+      ? null
+      : data.professionalSummary
+})
 
 export const countriesMock = [
   {

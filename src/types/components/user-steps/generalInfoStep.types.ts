@@ -9,4 +9,12 @@ interface GeneralInfoForm {
   professionalSummary: string
 }
 
-export type { CityType, CountryType, GeneralInfoForm }
+interface GeneralInfoFinal {
+  firstName: GeneralInfoForm['firstName']
+  lastName: GeneralInfoForm['lastName']
+  country: string | null
+  city: string | null
+  professionalSummary: string | null
+}
+
+export type { CityType, CountryType, GeneralInfoForm, GeneralInfoFinal }

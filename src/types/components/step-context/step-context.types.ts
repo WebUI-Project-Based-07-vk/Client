@@ -1,11 +1,16 @@
+import { GeneralInfoForm } from '~/types'
+
 type stepDataType = {
-  generalInfo: []
+  generalInfo: {
+    data: GeneralInfoForm
+    errors: { [key: string]: never }
+  }
   subjects: []
   language: []
   photo: string
 }
 
 export type useStepContextType = () => {
-  handleStepData: (label: string, data: string) => void
+  handleStepData: (label: string, data: string | GeneralInfoForm) => void
   stepData: stepDataType
 }

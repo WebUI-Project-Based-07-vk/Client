@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import {
   Container,
@@ -27,6 +27,8 @@ import { AutocompleteProps } from '@mui/material/Autocomplete'
 import useForm from '~/hooks/use-form'
 import { CityType, CountryType, GeneralInfoForm } from '~/types'
 import { SxProps, Theme } from '@mui/material'
+import { useStepContext } from '~/context/step-context'
+import { useStepContextType } from '~/types/components/step-context/step-context.types'
 
 const AutocompleteStyledTyped = AutocompleteStyled as <T>(
   props: AutocompleteProps<T, false, false, false>
@@ -38,20 +40,27 @@ interface GeneralInfoStepProps {
 
 const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
   const { t } = useTranslation()
+  const {
+    stepData: { generalInfo },
+    handleStepData
+  } = (useStepContext as useStepContextType)()
   const countries = countriesMock
-  const [cities, setCities] = useState<CityType[]>([])
+  const [cities, setCities] = useState<CityType[]>(
+    generalInfo.data !== initialValues && generalInfo.data.country
+      ? generalInfo.data.country.cities
+      : []
+  )
 
   const {
     data,
     errors,
     handleInputChange,
+    handleDataChange,
     handleBlur,
     handleNonInputValueChange,
-    // handleSubmit,
     resetData
   } = useForm<GeneralInfoForm>({
     initialValues,
-    onSubmit: () => new Promise(() => {}),
     validations
   })
 
@@ -64,9 +73,16 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
     resetData(['city'])
   }
 
+  const dataRef = useRef<GeneralInfoForm>(data)
   useEffect(() => {
+    dataRef.current = data
+  }, [data])
+
+  useEffect(() => {
+    if (generalInfo.data !== initialValues) handleDataChange(generalInfo.data)
+
     return () => {
-      // onSubmit...
+      handleStepData('generalInfo', dataRef.current)
     }
   }, [])
 
