@@ -11,6 +11,7 @@ import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
 
 import { styles } from '~/containers/guest-home-page/login-form/LoginForm.styles'
+import { helperTextHandler } from '~/utils/validations/common'
 
 const LoginForm = ({
   handleSubmit,
@@ -72,9 +73,8 @@ const LoginForm = ({
 
       <AppButton
         disabled={
-          !Object.values(data).every((value) => value) ||
-          !(data.password.length >= 8 && data.password.length <= 25) ||
-          !Object.values(errors).every((value) => !value)
+          helperTextHandler(data.email, 'email').trim().length !== 0 ||
+          helperTextHandler(data.password, 'password').trim().length !== 0
         }
         loading={authLoading}
         sx={styles.loginButton}
