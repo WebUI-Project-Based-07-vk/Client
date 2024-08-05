@@ -11,6 +11,7 @@ import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
 
 import { styles } from '~/containers/guest-home-page/login-form/LoginForm.styles'
+import { helperTextHandler } from '~/utils/validations/common'
 
 const LoginForm = ({
   handleSubmit,
@@ -70,7 +71,15 @@ const LoginForm = ({
         {t('login.forgotPassword')}
       </Typography>
 
-      <AppButton loading={authLoading} sx={styles.loginButton} type='submit'>
+      <AppButton
+        disabled={
+          helperTextHandler(data.email, 'email').trim().length !== 0 ||
+          helperTextHandler(data.password, 'password').trim().length !== 0
+        }
+        loading={authLoading}
+        sx={styles.loginButton}
+        type='submit'
+      >
         {t('common.labels.login')}
       </AppButton>
     </Box>
