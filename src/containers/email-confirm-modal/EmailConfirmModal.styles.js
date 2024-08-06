@@ -1,16 +1,16 @@
-/* eslint-disable */
 export const styles = {
   body: {
     margin: 0,
     padding: 0,
-    fontFamily: "'Rubik', sans-serif"
+    fontFamily: "'Rubik', sans-serif",
+    color: '#29313D'
   },
   box: {
+    margin: { xs: '0 auto', sm: 0 },
+    padding: { xs: 4, md: 11 },
     width: '744px',
     height: '396px',
-    margin: '200px auto',
     borderRadius: '8px',
-    border: '4px solid grey',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -44,7 +44,6 @@ export const styles = {
     fontWeight: 500,
     fontSize: '24px',
     lineHeight: '29px',
-    color: '#29313D',
     textAlign: 'center',
     marginBottom: '30px',
     '@media (max-width: 768px)': {
@@ -62,7 +61,6 @@ export const styles = {
     fontWeight: 400,
     fontSize: '18px',
     lineHeight: '21px',
-    color: '#29313D',
     textAlign: 'center',
     marginBottom: '20px',
     '@media (max-width: 768px)': {
@@ -78,6 +76,7 @@ export const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    mt: '32px',
     backgroundColor: '#262738',
     color: '#ffff',
     width: '152px',
@@ -108,7 +107,29 @@ export const styles = {
       color: '#e9e3e3',
       backgroundColor: '#36374b'
     }
+  },
+
+  titleWithDescription: {
+    title: {
+      typography: 'h6',
+      color: 'primary.900',
+      my: '14px',
+      width: '100%',
+      maxWidth: '422px',
+      height: 'auto',
+      fontSize: '24px',
+      lineHeight: '28px',
+      fontFamily: 'Rubik',
+      marginBottom: '10px',
+      textAlign: 'center',
+      '@media (max-width: 768px)': {
+        fontSize: '20px',
+        lineHeight: '24px'
+      },
+      '@media (max-width: 480px)': {
+        fontSize: '18px',
+        lineHeight: '20px'
+      }
+    }
   }
 }
-
-/* eslint-enable */
