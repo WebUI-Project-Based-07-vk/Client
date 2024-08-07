@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import {
   Container,
@@ -12,21 +12,34 @@ import {
 import img from '~/assets/img/tutor-home-page/become-tutor/languages.svg'
 import { styles } from '~/containers/tutor-home-page/language-step/LanguageStep.styles'
 import { useTranslation } from 'react-i18next'
-
-const languages = [
-  'English',
-  'Ukrainian',
-  'Polish',
-  'German',
-  'French',
-  'Spanish',
-  'Arabic'
-]
+import { useStepContext } from '~/context/step-context'
+import useAxios from '~/hooks/use-axios'
+import { fetchLanguages } from '~/services/language-service'
 
 const LanguageStep = ({ btnsBox }) => {
+  const { stepData, handleStepData } = useStepContext()
   const [inputValue, setInputValue] = useState('')
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState(stepData.language)
   const { t } = useTranslation()
+
+  const { response: languages } = useAxios({
+    service: fetchLanguages,
+    defaultResponse: [],
+    fetchOnMount: true
+  })
+
+  useEffect(() => {
+    setInputValue(value ? value : '')
+  }, [value])
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+    handleStepData('language', newValue)
+  }
+
+  const handleInputChange = (event, newInputValue) => {
+    setInputValue(newInputValue)
+  }
 
   return (
     <Container sx={styles.container}>
@@ -44,8 +57,8 @@ const LanguageStep = ({ btnsBox }) => {
         </MobileImgContainer>
         <AutocompleteStyled
           inputValue={inputValue}
-          onChange={(event, newValue) => setValue(newValue)}
-          onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+          onChange={handleChange}
+          onInputChange={handleInputChange}
           options={languages}
           renderInput={(params) => (
             <TextField {...params} label={t('Your native language')} />
