@@ -14,7 +14,10 @@ export const stepDataInitialValues: StepDataType = {
   professionalSummary: '',
   subjects: [],
   language: null,
-  photo: ''
+  photo: {
+    file: [],
+    image: null
+  }
 }
 
 export const stepDataValidations = {
@@ -35,5 +38,6 @@ export const stepDataCleanup = (data: StepDataType): StepDataTypeClean => ({
   professionalSummary:
     data.professionalSummary.trim().length === 0
       ? null
-      : data.professionalSummary
+      : data.professionalSummary,
+  photo: data.photo.image
 })

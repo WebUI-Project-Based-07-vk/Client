@@ -8,7 +8,10 @@ export interface StepDataType {
   professionalSummary: string
   subjects: string[]
   language: string | null
-  photo: string
+  photo: {
+    file: File[]
+    image: string | null
+  }
   // errors: { [key: string]: never }
 }
 
@@ -20,5 +23,5 @@ export interface StepDataTypeClean {
   professionalSummary: string | null
   subjects: string[]
   language: string | null
-  photo: string
+  photo: string | null
 }
