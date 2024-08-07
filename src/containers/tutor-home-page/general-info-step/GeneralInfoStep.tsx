@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import {
   Container,
@@ -18,17 +18,14 @@ import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralIn
 import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
 import { useTranslation } from 'react-i18next'
 import {
-  validations,
   countriesMock,
-  initialValues,
   textAreaMaxLength
 } from '~/containers/tutor-home-page/general-info-step/constants'
 import { AutocompleteProps } from '@mui/material/Autocomplete'
-import useForm from '~/hooks/use-form'
-import { CityType, CountryType, GeneralInfoForm } from '~/types'
+import { CityType, CountryType } from '~/types'
 import { SxProps, Theme } from '@mui/material'
 import { useStepContext } from '~/context/step-context'
-import { useStepContextType } from '~/types/components/step-context/step-context.types'
+import { stepDataInitialValues } from '~/containers/tutor-home-page/constants'
 
 const AutocompleteStyledTyped = AutocompleteStyled as <T>(
   props: AutocompleteProps<T, false, false, false>
@@ -41,28 +38,20 @@ interface GeneralInfoStepProps {
 const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
   const { t } = useTranslation()
   const {
-    stepData: { generalInfo },
-    handleStepData
-  } = (useStepContext as useStepContextType)()
-  const countries = countriesMock
-  const [cities, setCities] = useState<CityType[]>(
-    generalInfo.data !== initialValues && generalInfo.data.country
-      ? generalInfo.data.country.cities
-      : []
-  )
-
-  const {
-    data,
+    data: stepData,
     errors,
     handleInputChange,
     handleDataChange,
     handleBlur,
     handleNonInputValueChange,
     resetData
-  } = useForm<GeneralInfoForm>({
-    initialValues,
-    validations
-  })
+  } = useStepContext()
+  const countries = countriesMock
+  const [cities, setCities] = useState<CityType[]>(
+    stepData !== stepDataInitialValues && stepData.country
+      ? stepData.country.cities
+      : []
+  )
 
   const handleCountryChange = (
     _e: React.SyntheticEvent,
@@ -73,18 +62,9 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
     resetData(['city'])
   }
 
-  const dataRef = useRef<GeneralInfoForm>(data)
   useEffect(() => {
-    dataRef.current = data
-  }, [data])
-
-  useEffect(() => {
-    if (generalInfo.data !== initialValues) handleDataChange(generalInfo.data)
-
-    return () => {
-      handleStepData('generalInfo', dataRef.current)
-    }
-  }, [])
+    if (stepData !== stepDataInitialValues) handleDataChange(stepData)
+  }, [handleDataChange, stepData])
 
   return (
     <Container>
@@ -107,7 +87,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
               required
               sx={styles.input as SxProps<Theme>}
               type='text'
-              value={data.firstName}
+              value={stepData.firstName}
             />
             <AppTextField
               errorMsg={t(errors.lastName)}
@@ -117,7 +97,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
               required
               sx={styles.input as SxProps<Theme>}
               type='text'
-              value={data.lastName}
+              value={stepData.lastName}
             />
           </Box>
           <Box sx={styles.inputsWrapper}>
@@ -130,7 +110,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
                   placeholder={t('becomeTutor.generalInfo.countryLabel')}
                 />
               )}
-              value={data.country}
+              value={stepData.country}
             />
             <AutocompleteStyledTyped<CityType>
               onChange={(_e, newVal) => {
@@ -143,7 +123,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
                   placeholder={t('becomeTutor.generalInfo.cityLabel')}
                 />
               )}
-              value={data.city}
+              value={stepData.city}
             />
           </Box>
           <AppTextArea
@@ -153,7 +133,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
             placeholder={t('becomeTutor.generalInfo.textFieldLabel')}
             textFieldStyles={{ style: styles.textArea }}
             type='text'
-            value={data.professionalSummary}
+            value={stepData.professionalSummary}
           />
           <Typography sx={styles.helperText}>
             {t('becomeTutor.generalInfo.helperText')}

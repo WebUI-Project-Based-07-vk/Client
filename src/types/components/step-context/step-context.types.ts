@@ -1,16 +1,24 @@
-import { GeneralInfoForm } from '~/types'
+import { CityType, CountryType } from '~/types'
 
-type stepDataType = {
-  generalInfo: {
-    data: GeneralInfoForm
-    errors: { [key: string]: never }
-  }
-  subjects: []
-  language: []
+export interface StepDataType {
+  firstName: string
+  lastName: string
+  country: CountryType | null
+  city: CityType | null
+  professionalSummary: string
+  subjects: string[]
+  language: string | null
   photo: string
+  // errors: { [key: string]: never }
 }
 
-export type useStepContextType = () => {
-  handleStepData: (label: string, data: string | GeneralInfoForm) => void
-  stepData: stepDataType
+export interface StepDataTypeClean {
+  firstName: string
+  lastName: string
+  country: string | null
+  city: string | null
+  professionalSummary: string | null
+  subjects: string[]
+  language: string | null
+  photo: string
 }
