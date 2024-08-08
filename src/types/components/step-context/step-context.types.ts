@@ -9,7 +9,7 @@ export interface StepDataType {
   subjects: string[]
   language: string | null
   photo: {
-    file: File[]
+    fileName: string | null
     image: string | null
   }
   // errors: { [key: string]: never }

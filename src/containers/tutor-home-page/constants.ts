@@ -15,7 +15,7 @@ export const stepDataInitialValues: StepDataType = {
   subjects: [],
   language: null,
   photo: {
-    file: [],
+    fileName: null,
     image: null
   }
 }
