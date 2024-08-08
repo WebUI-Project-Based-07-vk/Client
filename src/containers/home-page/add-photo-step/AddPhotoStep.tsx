@@ -5,35 +5,33 @@ import PhotoPreview from './photo-preview/PhotoPreview'
 import { useTranslation } from 'react-i18next'
 import FileUploader from '~/components/file-uploader/FileUploader'
 import { useSnackBarContext } from '~/context/snackbar-context'
-import { useState } from 'react'
 import { useStepContext } from '~/context/step-context'
 import { validationData } from './constants'
-import { useStepContextType } from '~/types/components/step-context/step-context.types'
 import useUpload from '~/hooks/use-upload'
 
 const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element }) => {
   const { t } = useTranslation()
-  const { handleStepData } = (useStepContext as useStepContextType)()
+  const {
+    data: stepData,
+    handleNonInputValueChange,
+    resetData
+  } = useStepContext()
   const { setAlert } = useSnackBarContext()
-  const [image, setImage] = useState<string>()
-  const [file, setFile] = useState<File>()
 
   const emitter = ({ files, error }: { files: File[]; error: string }) => {
-    if (error) {
-      setAlert({ severity: 'error', message: error })
-    } else {
-      if (files.length > 0) {
-        setFile(files[0])
-        const fileReader = new FileReader()
-        fileReader.onload = () => {
-          setImage(fileReader.result as string)
-          handleStepData('photo', image as string)
-        }
-        fileReader.readAsDataURL(files[0])
-      } else {
-        setFile(undefined)
-        setImage('')
+    if (error) return setAlert({ severity: 'error', message: error })
+
+    if (files.length > 0) {
+      const fileReader = new FileReader()
+      fileReader.onload = () => {
+        handleNonInputValueChange('photo', {
+          file: [files[0]],
+          image: fileReader.result as string
+        })
       }
+      fileReader.readAsDataURL(files[0])
+    } else {
+      resetData(['photo'])
     }
   }
 
@@ -45,7 +43,7 @@ const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element }) => {
 
   return (
     <Box sx={style.root}>
-      <PhotoPreview dragDrop={dragDrop} image={image} />
+      <PhotoPreview dragDrop={dragDrop} image={stepData.photo.image} />
       <Box sx={style.rightBox}>
         <Box>
           <Typography sx={style.description}>
@@ -54,7 +52,7 @@ const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element }) => {
           <FileUploader
             buttonText={t('becomeTutor.photo.button')}
             emitter={emitter}
-            initialState={file && [file]}
+            initialState={stepData.photo.file}
             isImages
             sx={style.fileUploader}
             validationData={validationData}
