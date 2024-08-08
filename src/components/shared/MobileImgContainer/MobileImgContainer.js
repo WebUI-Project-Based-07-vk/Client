@@ -5,6 +5,9 @@ export const MobileImgContainer = styled(Box)(({ theme }) => ({
   display: 'none',
   [theme.breakpoints.down('sm')]: {
     display: 'block',
-    textAlign: 'center'
+    textAlign: 'center',
+    '& img': {
+      maxHeight: '250px'
+    }
   }
 }))

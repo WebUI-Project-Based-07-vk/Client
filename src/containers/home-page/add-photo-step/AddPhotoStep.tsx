@@ -6,7 +6,6 @@ import FileUploader from '~/components/file-uploader/FileUploader'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { useStepContext } from '~/context/step-context'
 import { validationData } from './constants'
-import { useStepContextType } from '~/types/components/step-context/step-context.types'
 import useUpload from '~/hooks/use-upload'
 import useBreakpoints from '~/hooks/use-breakpoints'
 import PhotoPreviewUploader from './photo-preview/PhotoPreviewUploader'
@@ -14,11 +13,12 @@ import PhotoPreviewUploader from './photo-preview/PhotoPreviewUploader'
 const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element }) => {
   const { t } = useTranslation()
   const {
-    handleStepData,
-    stepData: {
-      photo: { fileName, image }
-    }
-  } = (useStepContext as useStepContextType)()
+    data: {
+      photo: { image, fileName }
+    },
+    handleNonInputValueChange,
+    resetData
+  } = useStepContext()
   const { setAlert } = useSnackBarContext()
   const { isMobile, isTablet } = useBreakpoints()
 
@@ -27,23 +27,20 @@ const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element }) => {
       setAlert({ severity: 'error', message: error })
     } else {
       if (files.length > 0) {
-        handleStepData('photo', {
+        handleNonInputValueChange('photo', {
           image: image,
           fileName: files[0].name
         })
         const fileReader = new FileReader()
         fileReader.onload = () => {
-          handleStepData('photo', {
+          handleNonInputValueChange('photo', {
             image: fileReader.result as string,
             fileName: files[0].name
           })
         }
         fileReader.readAsDataURL(files[0])
       } else {
-        handleStepData('photo', {
-          image: '',
-          fileName: ''
-        })
+        resetData(['photo'])
       }
     }
   }
@@ -63,7 +60,7 @@ const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element }) => {
       {(isMobile || isTablet) && (
         <PhotoPreviewUploader
           emitter={emitter}
-          image={image}
+          image={image ? image : undefined}
           validationData={validationData}
         />
       )}

@@ -6,6 +6,7 @@ export const RightBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
+  maxWidth: '432px',
   [theme.breakpoints.down('md')]: {
     padding: '0'
   }

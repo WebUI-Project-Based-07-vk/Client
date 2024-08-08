@@ -12,7 +12,7 @@ interface UseFormProps<T> {
   submitWithData?: boolean
 }
 
-interface UseFormOutput<T> {
+export interface UseFormOutput<T> {
   data: T
   isDirty: boolean
   errors: { [K in keyof T]: string }

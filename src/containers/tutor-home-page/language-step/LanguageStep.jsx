@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import {
   Container,
@@ -15,11 +15,14 @@ import { useTranslation } from 'react-i18next'
 import { useStepContext } from '~/context/step-context'
 import useAxios from '~/hooks/use-axios'
 import { fetchLanguages } from '~/services/language-service'
+import { stepDataInitialValues } from '~/containers/tutor-home-page/constants'
 
 const LanguageStep = ({ btnsBox }) => {
-  const { stepData, handleStepData } = useStepContext()
-  const [inputValue, setInputValue] = useState('')
-  const [value, setValue] = useState(stepData.language)
+  const {
+    data: stepData,
+    handleNonInputValueChange,
+    handleDataChange
+  } = useStepContext()
   const { t } = useTranslation()
 
   const { response: languages } = useAxios({
@@ -29,17 +32,8 @@ const LanguageStep = ({ btnsBox }) => {
   })
 
   useEffect(() => {
-    setInputValue(value ? value : '')
-  }, [value])
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
-    handleStepData('language', newValue)
-  }
-
-  const handleInputChange = (event, newInputValue) => {
-    setInputValue(newInputValue)
-  }
+    if (stepData !== stepDataInitialValues) handleDataChange(stepData)
+  }, [handleDataChange, stepData])
 
   return (
     <Container sx={styles.container}>
@@ -56,15 +50,15 @@ const LanguageStep = ({ btnsBox }) => {
           <Img src={img} />
         </MobileImgContainer>
         <AutocompleteStyled
-          inputValue={inputValue}
-          onChange={handleChange}
-          onInputChange={handleInputChange}
+          onChange={(_e, newVal) => {
+            handleNonInputValueChange('language', newVal)
+          }}
           options={languages}
           renderInput={(params) => (
             <TextField {...params} label={t('Your native language')} />
           )}
           sx={styles.autocomplete}
-          value={value}
+          value={stepData.language}
         />
         {btnsBox}
       </RightBox>

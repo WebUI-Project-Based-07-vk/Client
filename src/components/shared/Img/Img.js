@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles'
 
 export const Img = styled('img')(({ theme }) => ({
+  height: '85%',
   width: '100%',
   maxWidth: '400px',
   [theme.breakpoints.down('md')]: {
