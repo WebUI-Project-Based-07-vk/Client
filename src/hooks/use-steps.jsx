@@ -65,19 +65,6 @@ const useSteps = ({ steps }) => {
 
     const cleanData = stepDataCleanup(stepData)
 
-    // const data = {
-    //   photo: stepData.photo[0] ? stepData.photo[0] : '',
-    //   firstName,
-    //   lastName,
-    //   address: {
-    //     country: country ?? '',
-    //     city: city ?? ''
-    //   },
-    //   professionalSummary: professionalSummary,
-    //   mainSubjects: stepData.subjects,
-    //   nativeLanguage: stepData.language ?? ''
-    // }
-
     !hasErrors && fetchData(cleanData)
   }
 
