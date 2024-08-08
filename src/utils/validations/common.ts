@@ -45,11 +45,11 @@ const validations: Validations = {
   }
 }
 
-export const emptyField = (
-  value: string | null,
+export function emptyField<T = string>(
+  value: T | null,
   emtyMessage = 'common.errorMessages.emptyField',
   helperText?: string
-) => {
+) {
   if (!value) {
     return emtyMessage
   }

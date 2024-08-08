@@ -1,22 +1,27 @@
-type GeneralInfoType = []
-type SubjectsType = string[]
-type LanguageType = []
+import { CityType, CountryType } from '~/types'
 
-type PhotoType = {
-  fileName: string
-  image: string
+export interface StepDataType {
+  firstName: string
+  lastName: string
+  country: CountryType | null
+  city: CityType | null
+  professionalSummary: string
+  subjects: string[]
+  language: string | null
+  photo: {
+    fileName: string | null
+    image: string | null
+  }
+  // errors: { [key: string]: never }
 }
 
-type StepDataType = {
-  generalInfo: GeneralInfoType
-  subjects: SubjectsType
-  language: LanguageType
-  photo: PhotoType
-}
-
-type AllTypes = GeneralInfoType | PhotoType | SubjectsType
-
-export type useStepContextType = () => {
-  handleStepData: (label: string, data: AllTypes) => void
-  stepData: StepDataType
+export interface StepDataTypeClean {
+  firstName: string
+  lastName: string
+  country: string | null
+  city: string | null
+  professionalSummary: string | null
+  subjects: string[]
+  language: string | null
+  photo: string | null
 }

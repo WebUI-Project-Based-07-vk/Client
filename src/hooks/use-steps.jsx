@@ -8,11 +8,12 @@ import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { userService } from '~/services/user-service'
 import { snackbarVariants } from '~/constants'
+import { stepDataCleanup } from '~/containers/tutor-home-page/constants'
 
 const useSteps = ({ steps }) => {
   const [activeStep, setActiveStep] = useState(0)
   const { closeModal } = useModalContext()
-  const { stepData } = useStepContext()
+  const { data: stepData } = useStepContext()
   const { setAlert } = useSnackBarContext()
   const { userId } = useAppSelector((state) => state.appMain)
 
@@ -62,23 +63,9 @@ const useSteps = ({ steps }) => {
   const handleSubmit = () => {
     const hasErrors = stepErrors.find((error) => error)
 
-    const { firstName, lastName, country, city, professionalSummary } =
-      stepData.generalInfo.data
+    const cleanData = stepDataCleanup(stepData)
 
-    const data = {
-      photo: stepData.photo ? stepData.photo[0] : '',
-      firstName,
-      lastName,
-      address: {
-        country: country ?? '',
-        city: city ?? ''
-      },
-      professionalSummary: professionalSummary,
-      mainSubjects: stepData.subjects,
-      nativeLanguage: stepData.language ?? ''
-    }
-
-    !hasErrors && fetchData(data)
+    !hasErrors && fetchData(cleanData)
   }
 
   const stepOperation = {
