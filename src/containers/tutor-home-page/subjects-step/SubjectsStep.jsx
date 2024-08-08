@@ -7,6 +7,8 @@ import img from '~/assets/img/tutor-home-page/become-tutor/subjects.svg'
 import { useStepContext } from '~/context/step-context'
 import AppPopover from '~/components/app-popover/AppPopover'
 import AppChip from '~/components/app-chip/AppChip'
+import { categories, subjectsMock } from './mocks'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
 const SubjectsStep = ({ btnsBox }) => {
   const { t } = useTranslation()
@@ -15,8 +17,8 @@ const SubjectsStep = ({ btnsBox }) => {
   const [subjectInputValue, setSubjectInputValue] = useState('')
   const [subjectValue, setSubjectValue] = useState(null)
   const {
-    handleStepData,
-    stepData: { subjects }
+    handleNonInputValueChange,
+    data: { subjects }
   } = useStepContext()
   const containerRef = useRef(null)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
@@ -29,7 +31,19 @@ const SubjectsStep = ({ btnsBox }) => {
   }, [])
 
   const handleClick = () => {
-    subjectValue && handleStepData('subjects', [...subjects, subjectValue])
+    if (!subjects.find((e) => e.id === subjectValue.id)) {
+      subjectValue &&
+        handleNonInputValueChange('subjects', [...subjects, subjectValue])
+    }
+    setSubjectValue(null)
+    setCategoryValue(null)
+  }
+
+  const removeSubject = (id) => {
+    handleNonInputValueChange(
+      'subjects',
+      subjects.filter((subject) => subject.id !== id)
+    )
   }
 
   return (
@@ -47,6 +61,7 @@ const SubjectsStep = ({ btnsBox }) => {
           <Box component='img' src={img} sx={styles.img} />
         </Box>
         <Autocomplete
+          getOptionLabel={(option) => (option.text ? option.text : '')}
           inputValue={categoryInputValue}
           onChange={(event, newValue) => {
             setCategoryValue(newValue)
@@ -55,7 +70,7 @@ const SubjectsStep = ({ btnsBox }) => {
           onInputChange={(event, newInputValue) =>
             setCategoryInputValue(newInputValue)
           }
-          options={['cat1', 'cat2', 'cat3', 'cat4']}
+          options={categories}
           renderInput={(params) => (
             <TextField {...params} label={t('Main Tutoring Category')} />
           )}
@@ -64,12 +79,15 @@ const SubjectsStep = ({ btnsBox }) => {
 
         <Autocomplete
           disabled={!categoryValue}
+          getOptionLabel={(option) => (option.text ? option.text : '')}
           inputValue={subjectInputValue}
-          onChange={(event, newValue) => setSubjectValue(newValue)}
+          onChange={(event, newValue) => {
+            setSubjectValue(newValue)
+          }}
           onInputChange={(event, newInputValue) =>
             setSubjectInputValue(newInputValue)
           }
-          options={['subject1', 'subject2', 'subject3', 'subject4']}
+          options={categoryValue ? subjectsMock[categoryValue.id] : []}
           renderInput={(params) => (
             <TextField {...params} label={t('Subject')} />
           )}
@@ -80,10 +98,17 @@ const SubjectsStep = ({ btnsBox }) => {
         </AppButton>
 
         <Box ref={containerRef} sx={styles.chipPopup}>
-          {subjects.length > 0 && (
+          {subjects && subjects.length > 0 && (
             <AppPopover
               initialItems={subjects.slice(0, 4).map((e) => (
-                <AppChip key={e}>{e}</AppChip>
+                <AppChip
+                  icon={
+                    <CloseRoundedIcon onClick={() => removeSubject(e.id)} />
+                  }
+                  key={e.id}
+                >
+                  {e.text}
+                </AppChip>
               ))}
               initialItemsWrapperStyle={styles.initialChips}
               showMoreElem={
@@ -94,15 +119,23 @@ const SubjectsStep = ({ btnsBox }) => {
             >
               <Box
                 sx={{
-                  ...styles.initialChips,
                   width: containerSize.width,
                   maxHeight: containerSize.height,
                   p: '3px'
                 }}
               >
-                {subjects.slice(4).map((e) => (
-                  <AppChip key={e}>{e}</AppChip>
-                ))}
+                <Box sx={styles.initialChips}>
+                  {subjects.map((e) => (
+                    <AppChip
+                      icon={
+                        <CloseRoundedIcon onClick={() => removeSubject(e.id)} />
+                      }
+                      key={e.id}
+                    >
+                      {e.text}
+                    </AppChip>
+                  ))}
+                </Box>
               </Box>
             </AppPopover>
           )}
