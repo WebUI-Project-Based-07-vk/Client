@@ -10,7 +10,7 @@ import useUpload from '~/hooks/use-upload'
 import useBreakpoints from '~/hooks/use-breakpoints'
 import PhotoPreviewUploader from './photo-preview/PhotoPreviewUploader'
 
-const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element }) => {
+const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element | null }) => {
   const { t } = useTranslation()
   const {
     data: {

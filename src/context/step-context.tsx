@@ -1,18 +1,23 @@
-import { createContext, ReactNode, useContext } from 'react'
+import { createContext, FC, ReactNode, useContext } from 'react'
 import { StepDataType } from '~/types/components/step-context/step-context.types'
 import useForm, { UseFormOutput } from '~/hooks/use-form'
-import {
-  stepDataInitialValues,
-  stepDataValidations
-} from '~/containers/tutor-home-page/constants'
+import { stepDataValidations } from '~/containers/tutor-home-page/constants'
 
 type CtxType = UseFormOutput<StepDataType>
 
 const StepContext = createContext<CtxType>({} as CtxType)
 
-const StepProvider = ({ children }: { children: ReactNode }) => {
+interface StepContextProps {
+  stepsInitialValues: StepDataType
+  children: ReactNode
+}
+
+const StepProvider: FC<StepContextProps> = ({
+  children,
+  stepsInitialValues
+}) => {
   const useStepForm = useForm<StepDataType>({
-    initialValues: stepDataInitialValues,
+    initialValues: stepsInitialValues,
     validations: stepDataValidations
   })
 
