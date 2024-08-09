@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
+const optionsMock = ['option-1', 'option-2', 'goo-goo', 'ga-ga', 'moo']
+
 vi.mock('@mui/material/Box', () => ({
   default: ({ children }) => <div>{children}</div>
 }))
@@ -13,16 +15,50 @@ vi.mock('@mui/material/SearchIcon', () => ({
 }))
 
 vi.mock('@mui/material/IconButton', () => ({
-  default: ({ children, ...props }) => <button {...props}>{children}</button>
+  default: ({ children, ...props }) => (
+    <button data-testid='search-autocomplete--clear-icon' {...props}>
+      {children}
+    </button>
+  )
 }))
 
 vi.mock('@mui/material/Button', () => ({
-  default: ({ children, ...props }) => <button {...props}>{children}</button>
+  default: ({ children, ...props }) => (
+    <button data-testid='search-autocomplete--search-butt' {...props}>
+      {children}
+    </button>
+  )
+}))
+
+vi.mock('~/components/app-auto-complete/AppAutoComplete', () => ({
+  default: ({ inputValue, onInputChange, onChange }) => (
+    <div>
+      <input
+        data-testid='search-autocomplete--search-input'
+        onChange={(e) => onInputChange(e, e.target.value)}
+        value={inputValue}
+      />
+      <ul data-testid='search-autocomplete--options'>
+        {optionsMock
+          .filter((opt) => opt.includes(inputValue))
+          .map((opt, i) => (
+            <li
+              key={i}
+              onClick={() => {
+                onChange({}, opt)
+                onInputChange({}, opt)
+              }}
+            >
+              {opt}
+            </li>
+          ))}
+      </ul>
+    </div>
+  )
 }))
 
 describe('SearchAutocomplete component', () => {
   let setSearchMock = vi.fn()
-  let optionsMock = ['option-1', 'option-2', 'goo-goo', 'ga-ga', 'moo']
   let searchInput
 
   beforeEach(() => {
@@ -35,7 +71,7 @@ describe('SearchAutocomplete component', () => {
       />
     )
 
-    searchInput = screen.getByLabelText(/search/i)
+    searchInput = screen.getByTestId('search-autocomplete--search-input')
   })
   afterEach(() => {
     vi.clearAllMocks()
@@ -47,6 +83,7 @@ describe('SearchAutocomplete component', () => {
 
   it('should updates search input on typing', async () => {
     await userEvent.type(searchInput, 'option qwerty')
+    console.log(searchInput.value)
     expect(searchInput).toHaveValue('option qwerty')
   })
 
@@ -54,7 +91,7 @@ describe('SearchAutocomplete component', () => {
     await userEvent.type(searchInput, 'opt')
 
     await waitFor(() => {
-      const filteredOptions = screen.getAllByRole('option')
+      const filteredOptions = screen.getAllByRole('listitem')
 
       expect(filteredOptions).toHaveLength(2)
       expect(filteredOptions[0]).toHaveTextContent('option-1')
@@ -66,7 +103,7 @@ describe('SearchAutocomplete component', () => {
     await userEvent.click(searchInput)
 
     await waitFor(async () => {
-      const options = screen.getAllByRole('option')
+      const options = screen.getAllByRole('listitem')
       await userEvent.click(options[0])
 
       expect(searchInput.value).toEqual(options[0].textContent)
