@@ -83,7 +83,6 @@ describe('SearchAutocomplete component', () => {
 
   it('should updates search input on typing', async () => {
     await userEvent.type(searchInput, 'option qwerty')
-    console.log(searchInput.value)
     expect(searchInput).toHaveValue('option qwerty')
   })
 
