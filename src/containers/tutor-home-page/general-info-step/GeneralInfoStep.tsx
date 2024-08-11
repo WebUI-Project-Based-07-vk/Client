@@ -13,19 +13,16 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppTextArea from '~/components/app-text-area/AppTextArea'
-
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
 import { useTranslation } from 'react-i18next'
-import {
-  countriesMock,
-  textAreaMaxLength
-} from '~/containers/tutor-home-page/general-info-step/constants'
+import { textAreaMaxLength } from '~/containers/tutor-home-page/general-info-step/constants'
 import { AutocompleteProps } from '@mui/material/Autocomplete'
 import { CityType, CountryType } from '~/types'
 import { SxProps, Theme } from '@mui/material'
 import { useStepContext } from '~/context/step-context'
 import { stepDataInitialValues } from '~/containers/tutor-home-page/constants'
+import axios from 'axios'
 
 const AutocompleteStyledTyped = AutocompleteStyled as <T>(
   props: AutocompleteProps<T, false, false, false>
@@ -46,24 +43,70 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
     handleNonInputValueChange,
     resetData
   } = useStepContext()
-  const countries = countriesMock
+  const [countries, setCountries] = useState<CountryType[]>([])
   const [cities, setCities] = useState<CityType[]>(
-    stepData !== stepDataInitialValues && stepData.country
-      ? stepData.country.cities
-      : []
+    stepData.country?.cities ?? []
   )
 
-  const handleCountryChange = (
+  const basePath = import.meta.env.VITE_API_BASE_PATH
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get<CountryType[]>(
+          `${basePath}/api/location/countries`
+        )
+        setCountries(response.data)
+      } catch (error) {
+        console.error('Failed to fetch countries', error)
+      }
+    }
+
+    fetchCountries().catch((error) => {
+      console.error('failed to fetch countries', error)
+    })
+  }, [])
+
+  const handleCountryChangeAsync = async (
     _e: React.SyntheticEvent,
     newVal: CountryType | null
   ) => {
-    setCities(newVal?.cities || [])
-    handleNonInputValueChange('country', newVal)
-    resetData(['city'])
+    try {
+      if (newVal && newVal.iso2) {
+        try {
+          const response = await axios.get<{
+            label: string
+            cities: CityType[]
+          }>(`${basePath}/api/location/countries/${newVal.iso2}/cities`, {
+            params: { countryName: newVal.label }
+          })
+          console.log('Cities fetched:', response.data.cities)
+          setCities(response.data.cities)
+        } catch (error) {
+          console.error('Failed to fetch cities:', error)
+        }
+      } else {
+        setCities([])
+      }
+      handleNonInputValueChange('country', newVal)
+      resetData(['city'])
+    } catch (error) {
+      console.error('Failed to fetch cities:', error)
+    }
+  }
+  const handleCountryChange = (
+    e: React.SyntheticEvent,
+    newVal: CountryType | null
+  ) => {
+    handleCountryChangeAsync(e, newVal).catch((error) => {
+      console.error('Failed to handle country change', error)
+    })
   }
 
   useEffect(() => {
-    if (stepData !== stepDataInitialValues) handleDataChange(stepData)
+    if (stepData !== stepDataInitialValues) {
+      handleDataChange(stepData)
+    }
   }, [handleDataChange, stepData])
 
   return (
@@ -110,9 +153,10 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
                   placeholder={t('becomeTutor.generalInfo.countryLabel')}
                 />
               )}
-              value={stepData.country}
+              value={stepData.country || null}
             />
             <AutocompleteStyledTyped<CityType>
+              getOptionLabel={(option) => option.label}
               onChange={(_e, newVal) => {
                 handleNonInputValueChange('city', newVal)
               }}
@@ -123,7 +167,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
                   placeholder={t('becomeTutor.generalInfo.cityLabel')}
                 />
               )}
-              value={stepData.city}
+              value={stepData.city || null}
             />
           </Box>
           <AppTextArea
