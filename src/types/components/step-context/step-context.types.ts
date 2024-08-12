@@ -6,7 +6,7 @@ export interface StepDataType {
   country: CountryType | null
   city: CityType | null
   professionalSummary: string
-  subjects: string[]
+  subjects: { id: string; text: string }[]
   language: string | null
   photo: {
     fileName: string | null

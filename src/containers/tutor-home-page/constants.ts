@@ -33,6 +33,7 @@ export const stepDataValidations = {
 
 export const stepDataCleanup = (data: StepDataType): StepDataTypeClean => ({
   ...data,
+  subjects: data.subjects.map((e) => e.id),
   country: data.country?.label || null,
   city: data.city?.label || null,
   professionalSummary:
