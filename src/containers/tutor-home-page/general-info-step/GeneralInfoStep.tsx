@@ -61,30 +61,41 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
         console.error('Failed to fetch countries', error)
       }
     }
+    const fetchCitiesForSelectedCountry = async () => {
+      if (stepData !== stepDataInitialValues && stepData.country) {
+        try {
+          const response = await axios.get<{
+            label: string
+            cities: CityType[]
+          }>(
+            `${basePath}/api/location/countries/${stepData.country.iso2}/cities`,
+            {
+              params: { countryName: stepData.country.label }
+            }
+          )
+          setCities(response.data.cities)
+        } catch (error) {
+          console.error('Failed to fetch cities for selected country:', error)
+        }
+      }
+    }
+    void fetchCountries()
+    void fetchCitiesForSelectedCountry()
+  }, [basePath, stepData])
 
-    fetchCountries().catch((error) => {
-      console.error('failed to fetch countries', error)
-    })
-  }, [])
-
-  const handleCountryChangeAsync = async (
+  const handleCountryChange = async (
     _e: React.SyntheticEvent,
     newVal: CountryType | null
   ) => {
     try {
       if (newVal && newVal.iso2) {
-        try {
-          const response = await axios.get<{
-            label: string
-            cities: CityType[]
-          }>(`${basePath}/api/location/countries/${newVal.iso2}/cities`, {
-            params: { countryName: newVal.label }
-          })
-          console.log('Cities fetched:', response.data.cities)
-          setCities(response.data.cities)
-        } catch (error) {
-          console.error('Failed to fetch cities:', error)
-        }
+        const response = await axios.get<{
+          label: string
+          cities: CityType[]
+        }>(`${basePath}/api/location/countries/${newVal.iso2}/cities`, {
+          params: { countryName: newVal.label }
+        })
+        setCities(response.data.cities)
       } else {
         setCities([])
       }
@@ -94,15 +105,6 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
       console.error('Failed to fetch cities:', error)
     }
   }
-  const handleCountryChange = (
-    e: React.SyntheticEvent,
-    newVal: CountryType | null
-  ) => {
-    handleCountryChangeAsync(e, newVal).catch((error) => {
-      console.error('Failed to handle country change', error)
-    })
-  }
-
   useEffect(() => {
     if (stepData !== stepDataInitialValues) {
       handleDataChange(stepData)
@@ -145,7 +147,9 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
           </Box>
           <Box sx={styles.inputsWrapper}>
             <AutocompleteStyledTyped<CountryType>
-              onChange={handleCountryChange}
+              onChange={(country, newVal) => {
+                void handleCountryChange(country, newVal)
+              }}
               options={countries}
               renderInput={(params) => (
                 <TextField
