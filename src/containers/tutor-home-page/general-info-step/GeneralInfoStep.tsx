@@ -32,7 +32,7 @@ const AutocompleteStyledTyped = AutocompleteStyled as <T>(
 ) => JSX.Element
 
 interface GeneralInfoStepProps {
-  btnsBox: JSX.Element
+  btnsBox: JSX.Element | null
 }
 
 const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
