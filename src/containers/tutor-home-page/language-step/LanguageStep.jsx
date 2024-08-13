@@ -18,11 +18,12 @@ import { fetchLanguages } from '~/services/language-service'
 import { stepDataInitialValues } from '~/containers/tutor-home-page/constants'
 
 const LanguageStep = ({ btnsBox }) => {
+  const { useStepForm } = useStepContext()
   const {
     data: stepData,
     handleNonInputValueChange,
     handleDataChange
-  } = useStepContext()
+  } = useStepForm
   const { t } = useTranslation()
 
   const { response: languages } = useAxios({

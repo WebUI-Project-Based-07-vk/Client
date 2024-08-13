@@ -4,8 +4,16 @@ import { Box, Typography, Autocomplete, TextField } from '@mui/material'
 import AppButton from '~/components/app-button/AppButton'
 import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
 import img from '~/assets/img/tutor-home-page/become-tutor/subjects.svg'
+// import { useStepContext } from '~/context/step-context'
 
 const SubjectsStep = ({ btnsBox }) => {
+  // const { useStepForm } = useStepContext()
+  // const {
+  //   data: stepData,
+  //   handleNonInputValueChange,
+  //   handleDataChange
+  // } = useStepForm
+
   const { t } = useTranslation()
   const [categoryInputValue, setCategoryInputValue] = useState('')
   const [categoryValue, setCategoryValue] = useState(null)

@@ -1,5 +1,12 @@
 import { CityType, CountryType } from '~/types'
 
+export interface StepErrors {
+  generalInfo: boolean
+  subjects: boolean
+  language: boolean
+  photo: boolean
+}
+
 export interface StepDataType {
   firstName: string
   lastName: string
@@ -12,7 +19,6 @@ export interface StepDataType {
     fileName: string | null
     image: string | null
   }
-  // errors: { [key: string]: never }
 }
 
 export interface StepDataTypeClean {

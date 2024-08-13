@@ -13,7 +13,8 @@ import { stepDataCleanup } from '~/containers/tutor-home-page/constants'
 const useSteps = ({ steps }) => {
   const [activeStep, setActiveStep] = useState(0)
   const { closeModal } = useModalContext()
-  const { data: stepData } = useStepContext()
+  const { useStepForm, stepErrors } = useStepContext()
+  const { data: stepData } = useStepForm
   const { setAlert } = useSnackBarContext()
   const { userId } = useAppSelector((state) => state.appMain)
 
@@ -45,10 +46,7 @@ const useSteps = ({ steps }) => {
     onResponseError: handleResponseError
   })
 
-  const stepErrors = Object.values(stepData).map(
-    (data) =>
-      data && data.errors && Object.values(data.errors).find((error) => error)
-  )
+  const hasErrors = Object.values(stepErrors).find((error) => error)
 
   const next = () => {
     setActiveStep((prev) => prev + 1)
@@ -61,9 +59,10 @@ const useSteps = ({ steps }) => {
   const isLastStep = activeStep === steps.length - 1
 
   const handleSubmit = () => {
-    const hasErrors = stepErrors.find((error) => error)
+    // console.log(hasErrors)
 
     const cleanData = stepDataCleanup(stepData)
+    // console.log(cleanData)
 
     !hasErrors && fetchData(cleanData)
   }
@@ -75,7 +74,7 @@ const useSteps = ({ steps }) => {
     setActiveStep
   }
 
-  return { activeStep, stepErrors, isLastStep, stepOperation, loading }
+  return { activeStep, hasErrors, isLastStep, stepOperation, loading }
 }
 
 export default useSteps

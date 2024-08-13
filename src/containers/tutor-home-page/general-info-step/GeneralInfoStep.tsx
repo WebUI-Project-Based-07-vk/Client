@@ -37,6 +37,7 @@ interface GeneralInfoStepProps {
 
 const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
   const { t } = useTranslation()
+  const { useStepForm, stepErrorsToggle, stepErrors } = useStepContext()
   const {
     data: stepData,
     errors,
@@ -45,7 +46,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
     handleBlur,
     handleNonInputValueChange,
     resetData
-  } = useStepContext()
+  } = useStepForm
   const countries = countriesMock
   const [cities, setCities] = useState<CityType[]>(
     stepData !== stepDataInitialValues && stepData.country
@@ -65,6 +66,23 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
   useEffect(() => {
     if (stepData !== stepDataInitialValues) handleDataChange(stepData)
   }, [handleDataChange, stepData])
+
+  useEffect(() => {
+    const hasError =
+      stepData.firstName.trim().length === 0 ||
+      stepData.lastName.trim().length === 0
+
+    if (hasError) {
+      stepErrorsToggle('generalInfo', true)
+    } else if (stepErrors.generalInfo) {
+      stepErrorsToggle('generalInfo', false)
+    }
+  }, [
+    stepData.firstName,
+    stepData.lastName,
+    stepErrors.generalInfo,
+    stepErrorsToggle
+  ])
 
   return (
     <Container>

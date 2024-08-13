@@ -1,4 +1,4 @@
-import { cloneElement } from 'react'
+import { cloneElement, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import Container from '@mui/material/Container'
@@ -10,29 +10,37 @@ import WestIcon from '@mui/icons-material/West'
 import AppButton from '~/components/app-button/AppButton'
 import useSteps from '~/hooks/use-steps'
 import { styles } from '~/components/step-wrapper/StepWrapper.styles'
+import { useStepContext } from '~/context/step-context'
+import Tooltip from '@mui/material/Tooltip'
 
 const StepWrapper = ({ children, steps }) => {
-  const { activeStep, stepErrors, isLastStep, loading, stepOperation } =
+  const { activeStep, hasErrors, isLastStep, loading, stepOperation } =
     useSteps({
       steps
     })
+  const { stepErrors } = useStepContext()
   const { next, back, setActiveStep, handleSubmit } = stepOperation
   const { t } = useTranslation()
 
-  const stepLabels = steps.map((step, index) => (
-    <Box
-      color={stepErrors[index] ? 'error.500' : 'primary.500'}
-      key={step}
-      onClick={() => setActiveStep(index)}
-      sx={[styles.defaultTab, index === activeStep && styles.activeTab]}
-      typography='caption'
-    >
-      {t(`step.stepLabels.${step}`)}
-    </Box>
-  ))
+  const stepLabels = useMemo(
+    () =>
+      steps.map((step, index) => (
+        <Box
+          color={stepErrors[step] ? 'error.500' : 'primary.500'}
+          key={step}
+          onClick={() => setActiveStep(index)}
+          sx={[styles.defaultTab, index === activeStep && styles.activeTab]}
+          typography='caption'
+        >
+          {t(`step.stepLabels.${step}`)}
+        </Box>
+      )),
+    [activeStep, setActiveStep, stepErrors, steps, t]
+  )
 
-  const nextButton = isLastStep ? (
+  const finishButton = (
     <AppButton
+      disabled={hasErrors}
       loading={loading}
       onClick={handleSubmit}
       size='small'
@@ -41,6 +49,19 @@ const StepWrapper = ({ children, steps }) => {
     >
       {t('common.finish')}
     </AppButton>
+  )
+  const finishButtonDisabled = (
+    <Tooltip arrow placement='top-start' title={t('step.finishTip')}>
+      <Box>{finishButton}</Box>
+    </Tooltip>
+  )
+
+  const nextButton = isLastStep ? (
+    hasErrors ? (
+      finishButtonDisabled
+    ) : (
+      finishButton
+    )
   ) : (
     <AppButton onClick={next} size='small' sx={styles.btn} variant='contained'>
       {t('common.next')}
