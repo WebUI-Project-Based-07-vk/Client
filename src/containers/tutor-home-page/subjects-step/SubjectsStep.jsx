@@ -9,6 +9,7 @@ import AppPopover from '~/components/app-popover/AppPopover'
 import AppChip from '~/components/app-chip/AppChip'
 import { categories, subjectsMock } from './mocks'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import { isSubjectDuplicate } from '~/containers/tutor-home-page/subjects-step/constants'
 
 const SubjectsStep = ({ btnsBox }) => {
   const { useStepForm } = useStepContext()
@@ -26,14 +27,9 @@ const SubjectsStep = ({ btnsBox }) => {
   }, [])
 
   const handleAddSubject = () => {
-    console.log(stepData.chips)
-    if (!stepData.chips.find((elem) => elem.id === stepData.subject.id)) {
-      stepData.subject &&
-        handleNonInputValueChange('chips', [
-          ...stepData.chips,
-          stepData.subject
-        ])
-    }
+    if (!stepData.subject || isSubjectDuplicate(stepData)) return
+
+    handleNonInputValueChange('chips', [...stepData.chips, stepData.subject])
     resetData(['subject', 'category'])
   }
 

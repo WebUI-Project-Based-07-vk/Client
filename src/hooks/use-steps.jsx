@@ -59,10 +59,7 @@ const useSteps = ({ steps }) => {
   const isLastStep = activeStep === steps.length - 1
 
   const handleSubmit = () => {
-    // console.log(hasErrors)
-
     const cleanData = stepDataCleanup(stepData)
-    // console.log(cleanData)
 
     !hasErrors && fetchData(cleanData)
   }

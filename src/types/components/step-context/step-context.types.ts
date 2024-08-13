@@ -27,10 +27,12 @@ export interface StepDataType {
 export interface StepDataTypeClean {
   firstName: string
   lastName: string
-  country: string | null
-  city: string | null
-  professionalSummary: string | null
-  subjects: string[]
-  language: string | null
-  photo: string | null
+  address: {
+    country: string
+    city: string
+  }
+  professionalSummary: string
+  mainSubjects: string[]
+  nativeLanguage: string
+  photo: string
 }
