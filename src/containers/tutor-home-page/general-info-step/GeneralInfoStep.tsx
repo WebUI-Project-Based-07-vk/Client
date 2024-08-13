@@ -131,6 +131,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
               value={stepData.country}
             />
             <AutocompleteStyledTyped<CityType>
+              disabled={!stepData.country}
               onChange={(_e, newVal) => {
                 handleNonInputValueChange('city', newVal)
               }}

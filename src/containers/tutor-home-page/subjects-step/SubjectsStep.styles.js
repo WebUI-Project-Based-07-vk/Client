@@ -31,6 +31,15 @@ export const styles = {
     m: { md: 0, xs: '0 auto' },
     pt: 0
   },
+  initialChips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '4px'
+  },
+  chipPopup: {
+    width: '100%',
+    height: '100%'
+  },
   btnsBlock: {
     mt: 'auto'
   }
