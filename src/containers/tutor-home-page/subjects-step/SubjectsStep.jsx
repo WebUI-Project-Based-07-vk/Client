@@ -23,17 +23,23 @@ const SubjectsStep = ({ btnsBox }) => {
   const containerRef = useRef(null)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
 
-  useEffect(() => {
+  const handleResize = () => {
     if (containerRef.current) {
       const { offsetWidth, offsetHeight } = containerRef.current
       setContainerSize({ width: offsetWidth, height: offsetHeight })
     }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const handleClick = () => {
     if (!subjects.find((e) => e.id === subjectValue.id)) {
       subjectValue &&
         handleNonInputValueChange('subjects', [...subjects, subjectValue])
+      handleResize()
     }
     setSubjectValue(null)
     setCategoryValue(null)
