@@ -1,4 +1,5 @@
 import { CityType, CountryType } from '~/types'
+import { SubjectType } from '~/types/components/user-steps/subjectsStep.types'
 
 export interface StepErrors {
   generalInfo: boolean
@@ -13,7 +14,9 @@ export interface StepDataType {
   country: CountryType | null
   city: CityType | null
   professionalSummary: string
-  subjects: { id: string; text: string }[]
+  category: SubjectType | null
+  subject: SubjectType | null
+  chips: SubjectType[]
   language: string | null
   photo: {
     fileName: string | null

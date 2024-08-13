@@ -12,7 +12,9 @@ export const stepDataInitialValues: StepDataType = {
   country: null,
   city: null,
   professionalSummary: '',
-  subjects: [],
+  category: null,
+  subject: null,
+  chips: [],
   language: null,
   photo: {
     fileName: null,
@@ -32,8 +34,11 @@ export const stepDataValidations = {
 }
 
 export const stepDataCleanup = (data: StepDataType): StepDataTypeClean => ({
-  ...data,
-  subjects: data.subjects.map((e) => e.id),
+  firstName: data.firstName,
+  lastName: data.lastName,
+  language: data.language,
+  // subjects: data.subjects.map((e) => e.id),
+  subjects: [],
   country: data.country?.label || null,
   city: data.city?.label || null,
   professionalSummary:
