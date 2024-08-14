@@ -35,6 +35,7 @@ export const style = {
     maxWidth: '440px',
     maxHeight: { xs: '440px', md: '100%' },
     height: { xs: '100%', sm: '310px', md: '100%' },
+    minHeight: '310px',
     width: { md: '100%' },
     aspectRatio: 1,
     border: '2px dashed',
