@@ -61,6 +61,10 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
         console.error('Failed to fetch countries', error)
       }
     }
+    void fetchCountries()
+  }, [basePath])
+
+  useEffect(() => {
     const fetchCitiesForSelectedCountry = async () => {
       if (stepData !== stepDataInitialValues && stepData.country) {
         try {
@@ -79,9 +83,8 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
         }
       }
     }
-    void fetchCountries()
     void fetchCitiesForSelectedCountry()
-  }, [basePath, stepData])
+  }, [basePath, stepData.country])
 
   const handleCountryChange = async (
     _e: React.SyntheticEvent,
@@ -147,8 +150,8 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
           </Box>
           <Box sx={styles.inputsWrapper}>
             <AutocompleteStyledTyped<CountryType>
-              onChange={(country, newVal) => {
-                void handleCountryChange(country, newVal)
+              onChange={(_e, newVal) => {
+                void handleCountryChange(_e, newVal)
               }}
               options={countries}
               renderInput={(params) => (
