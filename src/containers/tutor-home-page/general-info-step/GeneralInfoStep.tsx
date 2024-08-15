@@ -75,7 +75,6 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
               params: { countryName: stepData.country.label }
             }
           )
-          console.log('Cities fetched:', response.data.cities)
           setCities(response.data.cities)
         } catch (error) {
           console.error('Failed to fetch cities for selected country:', error)
