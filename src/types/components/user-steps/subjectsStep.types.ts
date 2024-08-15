@@ -1,1 +1,1 @@
-export type SubjectType = { id: string; label: string }
+export type SubjectType = { _id: string; name: string }
