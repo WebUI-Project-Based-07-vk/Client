@@ -9,17 +9,13 @@ import AppPopover from '~/components/app-popover/AppPopover'
 import AppChip from '~/components/app-chip/AppChip'
 import { categories, subjectsMock } from './mocks'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import { isSubjectDuplicate } from '~/containers/tutor-home-page/subjects-step/constants'
 
 const SubjectsStep = ({ btnsBox }) => {
+  const { useStepForm } = useStepContext()
+  const { data: stepData, handleNonInputValueChange, resetData } = useStepForm
   const { t } = useTranslation()
-  const [categoryInputValue, setCategoryInputValue] = useState('')
-  const [categoryValue, setCategoryValue] = useState(null)
-  const [subjectInputValue, setSubjectInputValue] = useState('')
-  const [subjectValue, setSubjectValue] = useState(null)
-  const {
-    handleNonInputValueChange,
-    data: { subjects }
-  } = useStepContext()
+
   const containerRef = useRef(null)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
 
@@ -30,19 +26,17 @@ const SubjectsStep = ({ btnsBox }) => {
     }
   }, [])
 
-  const handleClick = () => {
-    if (!subjects.find((e) => e.id === subjectValue.id)) {
-      subjectValue &&
-        handleNonInputValueChange('subjects', [...subjects, subjectValue])
-    }
-    setSubjectValue(null)
-    setCategoryValue(null)
+  const handleAddSubject = () => {
+    if (!stepData.subject || isSubjectDuplicate(stepData)) return
+
+    handleNonInputValueChange('chips', [...stepData.chips, stepData.subject])
+    resetData(['subject', 'category'])
   }
 
-  const removeSubject = (id) => {
+  const handleRemoveSubject = (id) => {
     handleNonInputValueChange(
-      'subjects',
-      subjects.filter((subject) => subject.id !== id)
+      'chips',
+      stepData.chips.filter((elem) => elem.id !== id)
     )
   }
 
@@ -61,59 +55,51 @@ const SubjectsStep = ({ btnsBox }) => {
           <Box component='img' src={img} sx={styles.img} />
         </Box>
         <Autocomplete
-          getOptionLabel={(option) => (option.text ? option.text : '')}
-          inputValue={categoryInputValue}
-          onChange={(event, newValue) => {
-            setCategoryValue(newValue)
-            setSubjectValue(null)
+          onChange={(_e, newVal) => {
+            handleNonInputValueChange('category', newVal)
+            resetData(['subject'])
           }}
-          onInputChange={(event, newInputValue) =>
-            setCategoryInputValue(newInputValue)
-          }
           options={categories}
           renderInput={(params) => (
             <TextField {...params} label={t('Main Tutoring Category')} />
           )}
-          value={categoryValue}
+          value={stepData.category}
         />
 
         <Autocomplete
-          disabled={!categoryValue}
-          getOptionLabel={(option) => (option.text ? option.text : '')}
-          inputValue={subjectInputValue}
-          onChange={(event, newValue) => {
-            setSubjectValue(newValue)
+          disabled={!stepData.category}
+          onChange={(_e, newVal) => {
+            handleNonInputValueChange('subject', newVal)
           }}
-          onInputChange={(event, newInputValue) =>
-            setSubjectInputValue(newInputValue)
-          }
-          options={categoryValue ? subjectsMock[categoryValue.id] : []}
+          options={stepData.category ? subjectsMock[stepData.category.id] : []}
           renderInput={(params) => (
             <TextField {...params} label={t('Subject')} />
           )}
-          value={subjectValue}
+          value={stepData.subject}
         />
-        <AppButton onClick={handleClick} size='large' variant='tonal'>
+        <AppButton onClick={handleAddSubject} size='large' variant='tonal'>
           {t('Add one more subject')}
         </AppButton>
 
         <Box ref={containerRef} sx={styles.chipPopup}>
-          {subjects && subjects.length > 0 && (
+          {stepData.chips?.length > 0 && (
             <AppPopover
-              initialItems={subjects.slice(0, 4).map((e) => (
+              initialItems={stepData.chips.slice(0, 4).map((elem) => (
                 <AppChip
                   icon={
-                    <CloseRoundedIcon onClick={() => removeSubject(e.id)} />
+                    <CloseRoundedIcon
+                      onClick={() => handleRemoveSubject(elem.id)}
+                    />
                   }
-                  key={e.id}
+                  key={elem.id}
                 >
-                  {e.text}
+                  {elem.label}
                 </AppChip>
               ))}
               initialItemsWrapperStyle={styles.initialChips}
               showMoreElem={
-                subjects.slice(4).length > 0 && (
-                  <AppChip>{`+${subjects.slice(4).length}`}</AppChip>
+                stepData.chips.slice(4).length > 0 && (
+                  <AppChip>{`+${stepData.chips.slice(4).length}`}</AppChip>
                 )
               }
             >
@@ -125,14 +111,16 @@ const SubjectsStep = ({ btnsBox }) => {
                 }}
               >
                 <Box sx={styles.initialChips}>
-                  {subjects.map((e) => (
+                  {stepData.chips.map((elem) => (
                     <AppChip
                       icon={
-                        <CloseRoundedIcon onClick={() => removeSubject(e.id)} />
+                        <CloseRoundedIcon
+                          onClick={() => handleRemoveSubject(elem.id)}
+                        />
                       }
-                      key={e.id}
+                      key={elem.id}
                     >
-                      {e.text}
+                      {elem.label}
                     </AppChip>
                   ))}
                 </Box>

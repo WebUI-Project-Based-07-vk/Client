@@ -12,13 +12,14 @@ import PhotoPreviewUploader from './photo-preview/PhotoPreviewUploader'
 
 const AddPhotoStep = ({ btnsBox }: { btnsBox: JSX.Element | null }) => {
   const { t } = useTranslation()
+  const { useStepForm } = useStepContext()
   const {
     data: {
       photo: { image, fileName }
     },
     handleNonInputValueChange,
     resetData
-  } = useStepContext()
+  } = useStepForm
   const { setAlert } = useSnackBarContext()
   const { isMobile, isTablet } = useBreakpoints()
 

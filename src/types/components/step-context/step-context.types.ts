@@ -1,4 +1,12 @@
 import { CityType, CountryType } from '~/types'
+import { SubjectType } from '~/types/components/user-steps/subjectsStep.types'
+
+export interface StepErrors {
+  generalInfo: boolean
+  subjects: boolean
+  language: boolean
+  photo: boolean
+}
 
 export interface StepDataType {
   firstName: string
@@ -6,22 +14,25 @@ export interface StepDataType {
   country: CountryType | null
   city: CityType | null
   professionalSummary: string
-  subjects: { id: string; text: string }[]
+  category: SubjectType | null
+  subject: SubjectType | null
+  chips: SubjectType[]
   language: string | null
   photo: {
     fileName: string | null
     image: string | null
   }
-  // errors: { [key: string]: never }
 }
 
 export interface StepDataTypeClean {
   firstName: string
   lastName: string
-  country: string | null
-  city: string | null
-  professionalSummary: string | null
-  subjects: string[]
-  language: string | null
-  photo: string | null
+  address: {
+    country: string
+    city: string
+  }
+  professionalSummary: string
+  mainSubjects: string[]
+  nativeLanguage: string
+  photo: string
 }

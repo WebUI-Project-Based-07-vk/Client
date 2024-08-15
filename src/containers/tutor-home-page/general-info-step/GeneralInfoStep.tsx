@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppTextArea from '~/components/app-text-area/AppTextArea'
+
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
 import { useTranslation } from 'react-i18next'
@@ -34,6 +35,7 @@ interface GeneralInfoStepProps {
 
 const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
   const { t } = useTranslation()
+  const { useStepForm, stepErrorsToggle, stepErrors } = useStepContext()
   const {
     data: stepData,
     errors,
@@ -42,7 +44,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
     handleBlur,
     handleNonInputValueChange,
     resetData
-  } = useStepContext()
+  } = useStepForm
   const [countries, setCountries] = useState<CountryType[]>([])
   const [cities, setCities] = useState<CityType[]>([])
 
@@ -95,10 +97,25 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
   }
 
   useEffect(() => {
-    if (stepData !== stepDataInitialValues) {
-      handleDataChange(stepData)
-    }
+    if (stepData !== stepDataInitialValues) handleDataChange(stepData)
   }, [handleDataChange, stepData])
+
+  useEffect(() => {
+    const hasError =
+      stepData.firstName.trim().length === 0 ||
+      stepData.lastName.trim().length === 0
+
+    if (hasError) {
+      stepErrorsToggle('generalInfo', true)
+    } else if (stepErrors.generalInfo) {
+      stepErrorsToggle('generalInfo', false)
+    }
+  }, [
+    stepData.firstName,
+    stepData.lastName,
+    stepErrors.generalInfo,
+    stepErrorsToggle
+  ])
 
   return (
     <Container>
@@ -136,9 +153,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
           </Box>
           <Box sx={styles.inputsWrapper}>
             <AutocompleteStyledTyped<CountryType>
-              onChange={(_e, newVal) => {
-                void handleCountryChange(_e, newVal)
-              }}
+              onChange={handleCountryChange}
               options={countries}
               renderInput={(params) => (
                 <TextField
@@ -149,7 +164,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
               value={stepData.country || null}
             />
             <AutocompleteStyledTyped<CityType>
-              getOptionLabel={(option) => option.label}
+              disabled={!stepData.country}
               onChange={(_e, newVal) => {
                 handleNonInputValueChange('city', newVal)
               }}

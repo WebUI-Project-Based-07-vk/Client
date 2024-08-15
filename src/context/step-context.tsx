@@ -1,9 +1,16 @@
-import { createContext, FC, ReactNode, useContext } from 'react'
-import { StepDataType } from '~/types/components/step-context/step-context.types'
+import { createContext, FC, ReactNode, useContext, useState } from 'react'
+import {
+  StepDataType,
+  StepErrors
+} from '~/types/components/step-context/step-context.types'
 import useForm, { UseFormOutput } from '~/hooks/use-form'
 import { stepDataValidations } from '~/containers/tutor-home-page/constants'
 
-type CtxType = UseFormOutput<StepDataType>
+interface CtxType {
+  useStepForm: UseFormOutput<StepDataType>
+  stepErrors: StepErrors
+  stepErrorsToggle: (key: keyof StepErrors, value: boolean) => void
+}
 
 const StepContext = createContext<CtxType>({} as CtxType)
 
@@ -21,8 +28,23 @@ const StepProvider: FC<StepContextProps> = ({
     validations: stepDataValidations
   })
 
+  const [stepErrors, setStepErrors] = useState<StepErrors>({
+    generalInfo: false,
+    subjects: false,
+    language: false,
+    photo: false
+  })
+  const stepErrorsToggle = (key: keyof StepErrors, value: boolean) => {
+    setStepErrors((prev) => ({
+      ...prev,
+      [key]: value
+    }))
+  }
+
   return (
-    <StepContext.Provider value={useStepForm}>{children}</StepContext.Provider>
+    <StepContext.Provider value={{ stepErrors, useStepForm, stepErrorsToggle }}>
+      {children}
+    </StepContext.Provider>
   )
 }
 

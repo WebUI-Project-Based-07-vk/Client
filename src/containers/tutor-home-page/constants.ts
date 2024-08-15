@@ -3,8 +3,9 @@ import {
   StepDataTypeClean
 } from '~/types/components/step-context/step-context.types'
 import { firstName, lastName } from '~/utils/validations/login'
-import { emptyField, textField } from '~/utils/validations/common'
+import { textField } from '~/utils/validations/common'
 import { textAreaMaxLength } from '~/containers/tutor-home-page/general-info-step/constants'
+import { isSubjectDuplicate } from '~/containers/tutor-home-page/subjects-step/constants'
 
 export const stepDataInitialValues: StepDataType = {
   firstName: '',
@@ -12,7 +13,9 @@ export const stepDataInitialValues: StepDataType = {
   country: null,
   city: null,
   professionalSummary: '',
-  subjects: [],
+  category: null,
+  subject: null,
+  chips: [],
   language: null,
   photo: {
     fileName: null,
@@ -23,22 +26,27 @@ export const stepDataInitialValues: StepDataType = {
 export const stepDataValidations = {
   firstName: (value: StepDataType['firstName']) => firstName(value),
   lastName: (value: StepDataType['lastName']) => lastName(value),
-  country: (value: StepDataType['country'] | string) =>
-    emptyField<StepDataType['country']>(value as StepDataType['country']),
-  city: (value: StepDataType['city'] | string) =>
-    emptyField<StepDataType['city']>(value as StepDataType['city']),
   professionalSummary: (value: StepDataType['professionalSummary']) =>
     textField(0, textAreaMaxLength)(value)
 }
 
 export const stepDataCleanup = (data: StepDataType): StepDataTypeClean => ({
-  ...data,
-  subjects: data.subjects.map((e) => e.id),
-  country: data.country?.label || null,
-  city: data.city?.label || null,
+  firstName: data.firstName,
+  lastName: data.lastName,
+  nativeLanguage: data.language ?? '',
+  mainSubjects: (() => {
+    const subjects: string[] = []
+    subjects.push(...data.chips.map((elem) => elem.id))
+    data.subject && !isSubjectDuplicate(data) && subjects.push(data.subject.id)
+    return subjects
+  })(),
+  address: {
+    country: data.country?.label ?? '',
+    city: data.city?.label ?? ''
+  },
   professionalSummary:
     data.professionalSummary.trim().length === 0
-      ? null
+      ? ''
       : data.professionalSummary,
-  photo: data.photo.image
+  photo: data.photo.image ?? ''
 })
