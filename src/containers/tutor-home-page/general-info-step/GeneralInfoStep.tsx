@@ -44,9 +44,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
     resetData
   } = useStepContext()
   const [countries, setCountries] = useState<CountryType[]>([])
-  const [cities, setCities] = useState<CityType[]>(
-    stepData.country?.cities ?? []
-  )
+  const [cities, setCities] = useState<CityType[]>([])
 
   const basePath = import.meta.env.VITE_API_BASE_PATH
 
@@ -66,7 +64,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
 
   useEffect(() => {
     const fetchCitiesForSelectedCountry = async () => {
-      if (stepData !== stepDataInitialValues && stepData.country) {
+      if (stepData.country) {
         try {
           const response = await axios.get<{
             label: string
@@ -77,37 +75,26 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
               params: { countryName: stepData.country.label }
             }
           )
+          console.log('Cities fetched:', response.data.cities)
           setCities(response.data.cities)
         } catch (error) {
           console.error('Failed to fetch cities for selected country:', error)
         }
-      }
-    }
-    void fetchCitiesForSelectedCountry()
-  }, [basePath, stepData.country])
-
-  const handleCountryChange = async (
-    _e: React.SyntheticEvent,
-    newVal: CountryType | null
-  ) => {
-    try {
-      if (newVal && newVal.iso2) {
-        const response = await axios.get<{
-          label: string
-          cities: CityType[]
-        }>(`${basePath}/api/location/countries/${newVal.iso2}/cities`, {
-          params: { countryName: newVal.label }
-        })
-        setCities(response.data.cities)
       } else {
         setCities([])
       }
-      handleNonInputValueChange('country', newVal)
-      resetData(['city'])
-    } catch (error) {
-      console.error('Failed to fetch cities:', error)
     }
+    void fetchCitiesForSelectedCountry()
+  }, [stepData.country, basePath])
+
+  const handleCountryChange = (
+    _e: React.SyntheticEvent,
+    newVal: CountryType | null
+  ) => {
+    handleNonInputValueChange('country', newVal)
+    resetData(['city'])
   }
+
   useEffect(() => {
     if (stepData !== stepDataInitialValues) {
       handleDataChange(stepData)
