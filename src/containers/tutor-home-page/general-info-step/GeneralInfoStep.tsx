@@ -17,15 +17,13 @@ import AppTextArea from '~/components/app-text-area/AppTextArea'
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
 import { useTranslation } from 'react-i18next'
-import {
-  countriesMock,
-  textAreaMaxLength
-} from '~/containers/tutor-home-page/general-info-step/constants'
+import { textAreaMaxLength } from '~/containers/tutor-home-page/general-info-step/constants'
 import { AutocompleteProps } from '@mui/material/Autocomplete'
 import { CityType, CountryType } from '~/types'
 import { SxProps, Theme } from '@mui/material'
 import { useStepContext } from '~/context/step-context'
 import { stepDataInitialValues } from '~/containers/tutor-home-page/constants'
+import axios from 'axios'
 
 const AutocompleteStyledTyped = AutocompleteStyled as <T>(
   props: AutocompleteProps<T, false, false, false>
@@ -47,18 +45,53 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
     handleNonInputValueChange,
     resetData
   } = useStepForm
-  const countries = countriesMock
-  const [cities, setCities] = useState<CityType[]>(
-    stepData !== stepDataInitialValues && stepData.country
-      ? stepData.country.cities
-      : []
-  )
+  const [countries, setCountries] = useState<CountryType[]>([])
+  const [cities, setCities] = useState<CityType[]>([])
+
+  const basePath = import.meta.env.VITE_API_BASE_PATH
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get<CountryType[]>(
+          `${basePath}/api/location/countries`
+        )
+        setCountries(response.data)
+      } catch (error) {
+        console.error('Failed to fetch countries', error)
+      }
+    }
+    void fetchCountries()
+  }, [basePath])
+
+  useEffect(() => {
+    const fetchCitiesForSelectedCountry = async () => {
+      if (stepData.country) {
+        try {
+          const response = await axios.get<{
+            label: string
+            cities: CityType[]
+          }>(
+            `${basePath}/api/location/countries/${stepData.country.iso2}/cities`,
+            {
+              params: { countryName: stepData.country.label }
+            }
+          )
+          setCities(response.data.cities)
+        } catch (error) {
+          console.error('Failed to fetch cities for selected country:', error)
+        }
+      } else {
+        setCities([])
+      }
+    }
+    void fetchCitiesForSelectedCountry()
+  }, [stepData.country, basePath])
 
   const handleCountryChange = (
     _e: React.SyntheticEvent,
     newVal: CountryType | null
   ) => {
-    setCities(newVal?.cities || [])
     handleNonInputValueChange('country', newVal)
     resetData(['city'])
   }
@@ -128,10 +161,11 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
                   placeholder={t('becomeTutor.generalInfo.countryLabel')}
                 />
               )}
-              value={stepData.country}
+              value={stepData.country || null}
             />
             <AutocompleteStyledTyped<CityType>
               disabled={!stepData.country}
+              // getOptionLabel={(option) => option.label}
               onChange={(_e, newVal) => {
                 handleNonInputValueChange('city', newVal)
               }}
@@ -142,7 +176,7 @@ const GeneralInfoStep: FC<GeneralInfoStepProps> = ({ btnsBox }) => {
                   placeholder={t('becomeTutor.generalInfo.cityLabel')}
                 />
               )}
-              value={stepData.city}
+              value={stepData.city || null}
             />
           </Box>
           <AppTextArea

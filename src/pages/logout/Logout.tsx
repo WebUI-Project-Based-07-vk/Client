@@ -10,7 +10,7 @@ const Logout = () => {
 
   const onLogoutUser = useCallback(async () => {
     await logoutUser()
-    navigate(guestRoutes.home.route)
+    navigate(guestRoutes.home.path)
   }, [logoutUser, navigate])
 
   useEffect(() => {
