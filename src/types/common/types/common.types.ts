@@ -21,6 +21,6 @@ export type LastLogin = {
 }
 
 export type Sort = {
-  order: SortEnum
-  orderBy: string
+  order?: SortEnum
+  orderBy?: string
 }

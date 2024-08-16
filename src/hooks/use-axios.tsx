@@ -20,7 +20,7 @@ interface UseAxiosReturn<TransformedResponse, Params> {
   response: TransformedResponse
   error: ErrorResponse | null
   loading: boolean
-  fetchData: (params?: Params) => Promise<void>
+  fetchData: (params?: Params) => Promise<TransformedResponse | null>
 }
 
 const useAxios = <
@@ -44,10 +44,12 @@ const useAxios = <
 
   const fetchData = useCallback(
     async (params?: Params) => {
+      console.log(params)
+      let responseData = null
       try {
         setLoading(true)
         const res = await service(params)
-        const responseData = transform ? transform(res.data) : res.data
+        responseData = transform ? transform(res.data) : res.data
         setResponse(responseData as TransformedResponse)
         setError(null)
         onResponse && onResponse(responseData as TransformedResponse)
@@ -60,6 +62,7 @@ const useAxios = <
       } finally {
         setLoading(false)
       }
+      return responseData as TransformedResponse
     },
     [service, transform, onResponse, onResponseError]
   )

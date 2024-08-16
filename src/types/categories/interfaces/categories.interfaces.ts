@@ -2,9 +2,15 @@ import { TableColumn } from '~/types/components/components.index'
 import { Categories } from '~/types/my-resources/myResources.index'
 import { Question } from '~/types/questions/questions.index'
 import { RequestParams } from '~/types/services/types/services.types'
+import { CategoryInterface } from '~/types'
 
 export interface CategoriesParams extends RequestParams {
-  name: string
+  name?: string
+}
+
+export interface CategoriesResponse {
+  count: number
+  categories: CategoryInterface[]
 }
 
 export interface CreateCategoriesParams {

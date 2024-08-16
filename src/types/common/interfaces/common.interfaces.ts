@@ -12,7 +12,8 @@ export interface CommonEntityFields {
 
 export interface CategoryAppearance {
   icon: string
-  color: string
+  backgroundColor: string
+  iconColor: string
 }
 
 export interface DataByRole<T> {
@@ -24,7 +25,7 @@ export interface CategoryInterface {
   _id: string
   name: string
   appearance: CategoryAppearance
-  totalOffers: DataByRole<number>
+  totalOffers: number
   createdAt: string
   updatedAt: string
 }

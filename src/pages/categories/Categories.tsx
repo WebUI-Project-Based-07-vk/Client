@@ -1,60 +1,130 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
 import CategoryCard from './CategoryCard'
-import { categoriesData } from './categoriesData'
-import { Grid, Button, Box, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import CategoriesHeader from './CategoriesHeader'
+import useAxios from '~/hooks/use-axios'
+import { categoryService } from '~/services/category-service'
+import { Container } from '~/components/shared'
+import Loader from '~/components/loader/Loader'
+import { useSnackBarContext } from '~/context/snackbar-context'
+import {
+  CategoriesParams,
+  CategoriesResponse,
+  CategoryInterface,
+  SortEnum
+} from '~/types'
+import { snackbarVariants } from '~/constants'
+import { mappedIcons } from '~/pages/categories/constants'
+import { styles } from '~/pages/categories/Categories.styles'
 
 const Categories: React.FC = () => {
-  const [visibleCount, setVisibleCount] = useState<number>(6)
-  const [filteredCategories, setFilteredCategories] = useState(categoriesData)
+  const { setAlert } = useSnackBarContext()
+
+  const itemsPerRequest = 3
+  const requestParams: CategoriesParams = {
+    skip: 0,
+    limit: 6,
+    sort: { order: SortEnum.Asc }
+  }
+  const [categories, setCategories] = useState<CategoryInterface[]>([])
+
+  const {
+    response: categoriesResponse,
+    loading,
+    error,
+    fetchData
+  } = useAxios<CategoriesResponse, CategoriesParams>({
+    service: (params) => categoryService.getCategories(params),
+    defaultResponse: {
+      count: 0,
+      categories: []
+    },
+    fetchOnMount: false
+  })
+
+  const isMounted = useRef(false)
+  useEffect(() => {
+    if (isMounted.current) return
+    isMounted.current = true
+
+    void fetchCategoriesData()
+    // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if (!error) return
+
+    setAlert({
+      severity: snackbarVariants.error,
+      message: `errors.${error.code}`
+    })
+  }, [error, setAlert])
+
+  async function fetchCategoriesData() {
+    console.log(categories)
+
+    const newRequestParams = {
+      ...requestParams,
+      skip: categories.length,
+      limit: itemsPerRequest
+    }
+
+    const res = await fetchData(
+      categories.length === 0 ? requestParams : newRequestParams
+    )
+    if (!res) return
+
+    console.log(res)
+    setCategories((prev) => [...prev, ...res.categories])
+  }
 
   const handleViewMore = () => {
-    setVisibleCount((prevCount) => prevCount + 3)
+    void fetchCategoriesData()
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSearch = (searchQuery: string) => {
-    if (searchQuery.trim()) {
-      const filtered = categoriesData.filter((category) =>
-        category.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      setFilteredCategories(filtered)
-    } else {
-      setFilteredCategories(categoriesData)
-    }
+    // if (searchQuery.trim()) {
+    //   const filtered = categoriesData.filter((category) =>
+    //     category.name.toLowerCase().includes(searchQuery.toLowerCase())
+    //   )
+    //   setCategories(filtered)
+    // } else {
+    //   setCategories(categoriesData)
+    // }
   }
+
+  if (loading)
+    return (
+      <Container>
+        <Loader pageLoad />
+      </Container>
+    )
 
   return (
     <PageWrapper>
       <CategoriesHeader onSearch={handleSearch} />
-      {filteredCategories.length > 0 ? (
+      {categories.length > 0 ? (
         <>
           <Grid container justifyContent='center' spacing={4}>
-            {filteredCategories
-              .slice(0, visibleCount)
-              .map((category, index) => (
-                <Grid item key={index} md={4} sm={6} xs={12}>
-                  <CategoryCard
-                    backgroundColor={category.backgroundColor}
-                    icon={category.icon}
-                    iconColor={category.iconColor}
-                    offers={category.offers}
-                    title={category.name}
-                  />
-                </Grid>
-              ))}
+            {categories.map((category, index) => (
+              <Grid item key={index} md={4} sm={6} xs={12}>
+                <CategoryCard
+                  backgroundColor={category.appearance.backgroundColor}
+                  icon={mappedIcons[category.appearance.icon]}
+                  iconColor={category.appearance.iconColor}
+                  title={category.name}
+                  totalOffers={category.totalOffers}
+                />
+              </Grid>
+            ))}
           </Grid>
-          {visibleCount < filteredCategories.length && (
+          {categories.length < categoriesResponse.count && (
             <Box display='flex' justifyContent='center' mt={3}>
               <Button
                 onClick={handleViewMore}
-                sx={{
-                  backgroundColor: '#E0E0E0',
-                  color: '#000000',
-                  '&:hover': {
-                    backgroundColor: '#BDBDBD'
-                  }
-                }}
+                sx={styles.viewMore}
                 variant='contained'
               >
                 View more

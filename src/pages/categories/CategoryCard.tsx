@@ -1,32 +1,23 @@
-import React from 'react'
+import React, { FC } from 'react'
+import { Card, CardActionArea, CardContent, Typography } from '@mui/material'
 import {
-  Card,
-  CardActionArea,
-  CardContent,
-  Typography,
-  Box
-} from '@mui/material'
-import { styled } from '@mui/system'
+  CategoryContent,
+  CategoryIconWrapper
+} from '~/pages/categories/Categories.styles'
+import { SvgIconComponent } from '@mui/icons-material'
 
-const CategoryIconWrapper = styled(Box)(({ theme, backgroundColor }) => ({
-  backgroundColor: backgroundColor,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: theme.spacing(2),
-  marginLeft: '30px',
-  borderRadius: '8px'
-}))
+interface CategoryCardProps {
+  icon: SvgIconComponent
+  title: string
+  totalOffers: number
+  iconColor: string
+  backgroundColor: string
+}
 
-const CategoryContent = styled(Box)({
-  display: 'flex',
-  alignItems: 'center'
-})
-
-const CategoryCard = ({
+const CategoryCard: FC<CategoryCardProps> = ({
   icon: Icon,
   title,
-  offers,
+  totalOffers,
   iconColor,
   backgroundColor
 }) => {
@@ -35,7 +26,7 @@ const CategoryCard = ({
       <CardActionArea href='categories/subjects'>
         <CategoryContent>
           <CategoryIconWrapper backgroundColor={backgroundColor}>
-            <Icon style={{ color: iconColor, fontSize: '2rem' }} />
+            <Icon style={{ color: iconColor }} />
           </CategoryIconWrapper>
 
           <CardContent>
@@ -52,7 +43,7 @@ const CategoryCard = ({
               style={{ fontSize: '14px' }}
               variant='h6'
             >
-              {offers} Offers
+              {totalOffers || 0} Offers
             </Typography>
           </CardContent>
         </CategoryContent>
