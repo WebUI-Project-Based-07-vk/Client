@@ -1,3 +1,4 @@
+import React from 'react'
 import { FC, useEffect, useState, useRef, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Slider, { SliderValueLabelProps } from '@mui/material/Slider'
@@ -104,6 +105,7 @@ const AppRange: FC<AppRangeProps> = ({ min, max, value, onChange }) => {
           {title}
         </Typography>
         <TextField
+          aria-label={title}
           id={idx.toString()}
           inputProps={{
             inputMode: 'numeric'

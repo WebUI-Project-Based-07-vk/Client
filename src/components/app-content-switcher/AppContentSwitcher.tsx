@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import React, { FC } from 'react'
 import { TypographyProps } from '@mui/material/Typography'
 import { Typography } from '@mui/material'
 import { SxProps } from '@mui/system'
@@ -41,6 +41,7 @@ const AppContentSwitcher: FC<SwitcherProps> = ({
       <Switch
         checked={active}
         data-testid='switch'
+        inputProps={{ 'aria-checked': active ? 'true' : 'false' }}
         onChange={onChange}
         sx={defaultStyles.switch}
       />
