@@ -84,7 +84,7 @@ const RegistrationDialog = ({ role }: { role: UserRoleEnum }) => {
             state ? closeModal() : {}
             return state
           },
-          message: 'questions.discardChanges',
+          message: 'questions.unsavedChanges',
           title: 'titles.confirmTitle'
         })
       : closeModal()
