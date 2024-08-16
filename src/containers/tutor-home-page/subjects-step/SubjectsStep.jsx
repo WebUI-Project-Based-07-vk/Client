@@ -7,9 +7,11 @@ import img from '~/assets/img/tutor-home-page/become-tutor/subjects.svg'
 import { useStepContext } from '~/context/step-context'
 import AppPopover from '~/components/app-popover/AppPopover'
 import AppChip from '~/components/app-chip/AppChip'
-import { categories, subjectsMock } from './mocks'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import { isSubjectDuplicate } from '~/containers/tutor-home-page/subjects-step/constants'
+import useAxios from '~/hooks/use-axios'
+import { categoryService } from '~/services/category-service'
+import { subjectService } from '~/services/subject-service'
 
 const SubjectsStep = ({ btnsBox }) => {
   const { useStepForm } = useStepContext()
@@ -19,12 +21,30 @@ const SubjectsStep = ({ btnsBox }) => {
   const containerRef = useRef(null)
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 })
 
+  const { response: categoriesResponse } = useAxios({
+    service: categoryService.getCategoriesNames,
+    defaultResponse: [],
+    fetchOnMount: true
+  })
+  const { response: subjectsResponse, fetchData: fetchSubjectsNames } =
+    useAxios({
+      service: (categoryId) => subjectService.getSubjectsNames(categoryId),
+      defaultResponse: [],
+      fetchOnMount: false
+    })
+
   useEffect(() => {
     if (containerRef.current) {
       const { offsetWidth, offsetHeight } = containerRef.current
       setContainerSize({ width: offsetWidth, height: offsetHeight })
     }
   }, [])
+
+  function handleCategoryChange(_e, newVal) {
+    handleNonInputValueChange('category', newVal)
+    resetData(['subject'])
+    newVal && void fetchSubjectsNames(newVal?._id ?? [])
+  }
 
   const handleAddSubject = () => {
     if (!stepData.subject || isSubjectDuplicate(stepData)) return
@@ -36,9 +56,13 @@ const SubjectsStep = ({ btnsBox }) => {
   const handleRemoveSubject = (id) => {
     handleNonInputValueChange(
       'chips',
-      stepData.chips.filter((elem) => elem.id !== id)
+      stepData.chips.filter((elem) => elem._id !== id)
     )
   }
+
+  useEffect(() => {
+    stepData.category && void fetchSubjectsNames(stepData.category._id ?? [])
+  }, [])
 
   return (
     <Box sx={styles.container}>
@@ -55,11 +79,10 @@ const SubjectsStep = ({ btnsBox }) => {
           <Box component='img' src={img} sx={styles.img} />
         </Box>
         <Autocomplete
-          onChange={(_e, newVal) => {
-            handleNonInputValueChange('category', newVal)
-            resetData(['subject'])
-          }}
-          options={categories}
+          getOptionLabel={(option) => option.name}
+          isOptionEqualToValue={(option, value) => option?._id === value?._id}
+          onChange={handleCategoryChange}
+          options={categoriesResponse.categoryNames ?? []}
           renderInput={(params) => (
             <TextField {...params} label={t('Main Tutoring Category')} />
           )}
@@ -68,10 +91,16 @@ const SubjectsStep = ({ btnsBox }) => {
 
         <Autocomplete
           disabled={!stepData.category}
+          getOptionLabel={(option) => option?.name || ''}
+          isOptionEqualToValue={(option, value) => option?._id === value?._id}
           onChange={(_e, newVal) => {
             handleNonInputValueChange('subject', newVal)
           }}
-          options={stepData.category ? subjectsMock[stepData.category.id] : []}
+          options={
+            stepData.category && subjectsResponse.subjects
+              ? subjectsResponse.subjects
+              : []
+          }
           renderInput={(params) => (
             <TextField {...params} label={t('Subject')} />
           )}
@@ -88,12 +117,12 @@ const SubjectsStep = ({ btnsBox }) => {
                 <AppChip
                   icon={
                     <CloseRoundedIcon
-                      onClick={() => handleRemoveSubject(elem.id)}
+                      onClick={() => handleRemoveSubject(elem._id)}
                     />
                   }
-                  key={elem.id}
+                  key={elem._id}
                 >
-                  {elem.label}
+                  {elem.name}
                 </AppChip>
               ))}
               initialItemsWrapperStyle={styles.initialChips}
@@ -115,10 +144,10 @@ const SubjectsStep = ({ btnsBox }) => {
                     <AppChip
                       icon={
                         <CloseRoundedIcon
-                          onClick={() => handleRemoveSubject(elem.id)}
+                          onClick={() => handleRemoveSubject(elem._id)}
                         />
                       }
-                      key={elem.id}
+                      key={elem._id}
                     >
                       {elem.label}
                     </AppChip>

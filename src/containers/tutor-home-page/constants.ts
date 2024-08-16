@@ -36,8 +36,8 @@ export const stepDataCleanup = (data: StepDataType): StepDataTypeClean => ({
   nativeLanguage: data.language ?? '',
   mainSubjects: (() => {
     const subjects: string[] = []
-    subjects.push(...data.chips.map((elem) => elem.id))
-    data.subject && !isSubjectDuplicate(data) && subjects.push(data.subject.id)
+    subjects.push(...data.chips.map((elem) => elem._id))
+    data.subject && !isSubjectDuplicate(data) && subjects.push(data.subject._id)
     return subjects
   })(),
   address: {
